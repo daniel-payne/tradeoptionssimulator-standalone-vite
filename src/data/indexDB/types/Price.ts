@@ -3,6 +3,8 @@
 //         Put  / Sell @ Bid / Offer Price <$  highest price a buyer/market will pay
 
 export type Price = {
+  symbol: string
+
   isMarketActive?: boolean
   isMarketClosed?: boolean
 

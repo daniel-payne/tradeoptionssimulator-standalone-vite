@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore-line
-import { fileURLToPath, URL } from "url";
+import { fileURLToPath, URL } from "url"
 
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react-swc"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,4 +16,9 @@ export default defineConfig({
       },
     ],
   },
-});
+  server: {
+    watch: {
+      ignored: ["**/source_data/**"],
+    },
+  },
+})

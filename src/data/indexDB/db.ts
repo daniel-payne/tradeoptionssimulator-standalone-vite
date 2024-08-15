@@ -2,65 +2,140 @@ import Dexie, { Table } from "dexie"
 
 import generateID from "@/utilities/generateID"
 
-import { controller as loadData } from "@/data/indexDB/controllers/loadData"
+import { controller as loadApplication } from "@/data/indexDB/controllers/loadApplication"
 
-import type { Quote } from "./types/Quote"
-import type { Trade } from "./types/Trade"
 import type { Timer } from "@/data/indexDB/types/Timer"
+
 import type { Scenario } from "@/data/indexDB/types/Scenario"
 import type { Market } from "@/data/indexDB/types/Market"
-import type { Data } from "@/data/indexDB/types/Data"
+import type { Currency } from "./types/Currency"
+
+import type { Trade } from "@/data/indexDB/types/Trade"
+import type { Transaction } from "@/data/indexDB/types/Transaction"
+
+import type { Margin } from "@/data/indexDB/types/Margin"
+import type { Balance } from "@/data/indexDB/types/Balance"
+
 import type { Price } from "@/data/indexDB/types/Price"
-import { Margin } from "./types/Margin"
-import { Transaction } from "./types/Transaction"
-import { Balance } from "./types/Balance"
-import { Status } from "./types/Status"
+import type { Rate } from "@/data/indexDB/types/Rate"
+
+import type { PriceSummary } from "@/data/indexDB/types/PriceSummary"
+import type { RateSummary } from "@/data/indexDB/types/RateSummary"
+
+import type { SymbolData } from "@/data/indexDB/types/SymbolData"
+import type { RangeData } from "@/data/indexDB/types/RangeData"
+import type { KeyData } from "@/data/indexDB/types/KeyData"
 
 export const DIXIE_BALANCE_KEY = "DIXIE_BALANCE_KEY"
 
 export class PriceSimulatorDexie extends Dexie {
-  id: string
   timeout: number | null = null
 
+  id: string
+
   timer!: Table<Timer>
-  balance!: Table<Balance>
 
   scenarios!: Table<Scenario>
   markets!: Table<Market>
-
-  statuses!: Table<Status>
-  data!: Table<Data>
-
-  prices!: Table<Price>
-
-  quotes!: Table<Quote>
+  currencies!: Table<Currency>
 
   trades!: Table<Trade>
-  margins!: Table<Margin>
   transactions!: Table<Transaction>
 
-  dataCache: Record<string, Data | undefined | null> = {}
-  pricesCache: Record<string, Price | undefined | null> = {}
+  marketHighs!: Table<SymbolData>
+  marketLows!: Table<SymbolData>
+  marketOpens!: Table<SymbolData>
+  marketCloses!: Table<SymbolData>
+  marketVolumes!: Table<SymbolData>
+  marketInterests!: Table<SymbolData>
+
+  averageOpenCloses!: Table<SymbolData>
+  averageHighLows!: Table<SymbolData>
+
+  percentageCloseYesterdays!: Table<SymbolData>
+  percentageOpenCloses!: Table<SymbolData>
+  percentageHighLows!: Table<SymbolData>
+
+  logSquaredHighLows!: Table<SymbolData>
+  logSquaredCloseOpens!: Table<SymbolData>
+
+  logOpenYesterdays!: Table<SymbolData>
+  logHighOpens!: Table<SymbolData>
+  logLowOpens!: Table<SymbolData>
+  logCloseOpens!: Table<SymbolData>
+
+  garminKlassValues!: Table<SymbolData>
+  rogersSatchellValues!: Table<SymbolData>
+
+  overnightVolatilities!: Table<RangeData>
+  parkinsonVolatilities!: Table<RangeData>
+  rogersSatchellVolatilities!: Table<RangeData>
+  garminKlassVolatilities!: Table<RangeData>
+  yangZhangVolatilities!: Table<RangeData>
+
+  currencyRates!: Table<KeyData>
+
+  priceSummaries!: Table<PriceSummary>
+  rateSummaries!: Table<RateSummary>
+
+  currentBalance!: Table<Balance>
+  currentPrices!: Table<Price>
+  currentRates!: Table<Rate>
+  currentMargins!: Table<Margin>
 
   constructor() {
     super("PriceSimulator")
 
-    this.version(38).stores({
+    this.version(2).stores({
       timer: "id",
-      balance: "id",
 
       scenarios: "code, name",
       markets: "symbol, name",
+      currencies: "key, name",
 
-      statuses: "symbol",
-      data: "symbol",
-      prices: "symbol",
-
-      quotes: "id, symbol",
       trades: "id, symbol, status, [symbol+status]",
-      margins: "id, symbol, status, [symbol+status] ",
+      transactions: "reference,  timestamp",
 
-      transactions: "id,  timestamp",
+      marketHighs: "symbol",
+      marketLows: "symbol",
+      marketOpens: "symbol",
+      marketCloses: "symbol",
+      marketVolumes: "symbol",
+      marketInterests: "symbol",
+
+      averageOpenCloses: "symbol",
+      averageHighLows: "symbol",
+
+      percentageCloseYesterdays: "symbol",
+      percentageOpenCloses: "symbol",
+      percentageHighLows: "symbol",
+
+      logSquaredHighLows: "symbol",
+      logSquaredCloseOpens: "symbol",
+
+      logOpenYesterdays: "symbol",
+      logHighOpens: "symbol",
+      logLowOpens: "symbol",
+      logCloseOpens: "symbol",
+
+      garminKlassValues: "symbol",
+      rogersSatchellValues: "symbol",
+
+      overnightVolatilities: "[symbol+duration]",
+      parkinsonVolatilities: "[symbol+duration]",
+      rogersSatchellVolatilities: "[symbol+duration]",
+      garminKlassVolatilities: "[symbol+duration]",
+      yangZhangVolatilities: "[symbol+duration]",
+
+      currencyRates: "key",
+
+      priceSummaries: "symbol",
+      rateSummaries: "key",
+
+      currentBalance: "id",
+      currentPrices: "symbol",
+      currentRates: "key",
+      currentMargins: "id",
     })
 
     this.id = generateID()
@@ -72,7 +147,7 @@ export class PriceSimulatorDexie extends Dexie {
 const db = new PriceSimulatorDexie()
 
 db.on("ready", function () {
-  loadData(db)
+  loadApplication(db)
   // window.addEventListener("onbeforeunload", async () => {
   //   const id = db.id
   //   const collection = await db.status.limit(1)

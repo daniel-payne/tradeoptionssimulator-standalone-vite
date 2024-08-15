@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@keldan-systems/state-mutex": "^0.0.29",
+    "@types/papaparse": "^5.3.14",
     "@types/react-window": "^1.8.8",
     "@types/sort-by": "^1.2.3",
     "chartjs-adapter-date-fns": "^3.0.0",
@@ -18,8 +19,11 @@
     "date-fns": "^3.6.0",
     "dexie": "^3.2.7",
     "dexie-react-hooks": "^1.1.7",
+    "gaussian-analytics": "^0.6.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
+    "option-pricing": "^2.1.0",
+    "papaparse": "^5.4.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
@@ -42,7 +46,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.9",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.9",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
     "url": "^0.11.4",
     "vite": "^5.4.0"

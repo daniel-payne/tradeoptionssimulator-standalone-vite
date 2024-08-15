@@ -4,7 +4,7 @@ import db from "@/data/indexDB/db"
 
 import type { Timer } from "@/data/indexDB/types/Timer"
 import { useEffect } from "react"
-import getTimer from "../controllers/getTimer"
+import loadTimer from "../controllers/getTimer"
 
 export default function useTimer(): Timer | undefined {
   const timer = useLiveQuery(async () => {
@@ -13,7 +13,7 @@ export default function useTimer(): Timer | undefined {
 
   useEffect(() => {
     if (timer == null) {
-      getTimer()
+      loadTimer()
     }
   }, [timer])
 

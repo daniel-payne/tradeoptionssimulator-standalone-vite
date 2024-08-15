@@ -2,51 +2,59 @@ import db from "@/data/indexDB/db"
 
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 
-import { DEFAULT_START } from "@/data/indexDB/constants/DEFAULT_START"
-import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
-
-import updateTimer from "@/data/indexDB/controllers/updateTimer"
-
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 import getTimer from "./getTimer"
+import updateTimer from "./updateTimer"
+import recalculateCurrentPrices from "./recalculateCurrentPrices"
+import recalculateCurrentRates from "./recalculateCurrentRates"
 
-import recalculatePrices from "./recalculatePrices"
-import recalculateMargins from "./recalculateMargins"
-// import updateStatus from "../update/updateStatus"
+// import recalculatePrices from "./recalculatePrices"
+// import recalculateMargins from "./recalculateMargins"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
-  const timer = await getTimer()
+  const currentTimer = await getTimer()
 
-  db.transaction("rw", ["timer", "data", "markets", "prices", "trades", "margins", "statuses", "transactions"], async () => {
-    const currentDay = timer?.currentDay
+  db.transaction(
+    "rw",
+    [
+      "timer",
+      "markets",
+      "currencies",
+      "marketOpens",
+      "marketHighs",
+      "marketLows",
+      "marketCloses",
+      "currencyRates",
+      "priceSummaries",
+      "rateSummaries",
+      "currentPrices",
+      "currentRates",
+    ],
+    async () => {
+      const currentIndex = (currentTimer?.currentIndex ?? 0) + 1
 
-    const isOwner = takeControl === true ? true : timer?.id === db.id
+      const isOwner = takeControl === true ? true : currentTimer?.id === db.id
 
-    let isTimerActive = takeControl === true ? true : timer?.isTimerActive === true
+      let isTimerActive = takeControl === true ? true : currentTimer?.isTimerActive === true
 
-    if (isOwner && isTimerActive && currentDay != null) {
-      const oldDate = new Date(currentDay ?? DEFAULT_START)
-      const newDate = new Date(oldDate.getTime() + ONE_DAY)
+      if (isOwner && isTimerActive) {
+        if (takeControl === true) {
+          isTimerActive = false
 
-      const newDay = newDate.toISOString().substring(0, 10)
-      const newTimestamp = newDate.getTime()
+          await updateTimer({ id: db.id, currentIndex, isTimerActive })
+        } else {
+          await updateTimer({ currentIndex: currentIndex })
+        }
 
-      if (takeControl === true) {
-        isTimerActive = false
-
-        await updateTimer({ id: db.id, currentDay: newDay, currentTimestamp: newTimestamp, isTimerActive })
-      } else {
-        await updateTimer({ currentDay: newDay, currentTimestamp: newTimestamp })
+        await recalculateCurrentPrices()
+        await recalculateCurrentRates()
+        // await recalculateMargins()
       }
-
-      await recalculatePrices()
-
-      await recalculateMargins()
     }
-  })
+  )
     .then(async () => {
-      const { speed, isTimerActive } = timer ?? {}
+      const { speed, isTimerActive } = currentTimer ?? {}
 
       if (isTimerActive === true) {
         db.timeout = window.setTimeout(() => {

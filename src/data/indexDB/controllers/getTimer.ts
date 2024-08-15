@@ -4,6 +4,7 @@ import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 import { DEFAULT_START } from "@/data/indexDB/constants/DEFAULT_START"
+import { Timer } from "../types/Timer"
 
 export async function controller(db: PriceSimulatorDexie) {
   const id = db.id
@@ -13,14 +14,12 @@ export async function controller(db: PriceSimulatorDexie) {
   if (timer == null) {
     const defaultTimer = {
       id,
-      speed: ScenarioSpeed.slow,
-      startDay: DEFAULT_START,
-      currentDay: DEFAULT_START,
-      currentTimestamp: new Date(DEFAULT_START).getTime(),
+      speed: ScenarioSpeed.Slow,
+      currentIndex: DEFAULT_START,
       isTimerActive: false,
     }
 
-    timer = { ...defaultTimer, id }
+    timer = { ...defaultTimer, id } as Timer
 
     await db.timer.put(timer)
   }
