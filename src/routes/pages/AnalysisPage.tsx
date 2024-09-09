@@ -5,6 +5,10 @@ import { OptionExecution } from "@/data/indexDB/enums/OptionExecution"
 
 import { TradeDirection } from "@/data/indexDB/enums/TradeDirection"
 import useActiveMarkets from "@/data/indexDB/hooks/useActiveMarkets"
+import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
+import useCurrentRateForKey from "@/data/indexDB/hooks/useCurrentRateForKey"
+
+import useCurrentVolatilityForSymbol from "@/data/indexDB/hooks/useCurrentVolatilityForSymbol"
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import { Analysis } from "@/data/indexDB/types/Analysis"
 
@@ -25,7 +29,7 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
   const activeMarkets = useActiveMarkets()
   const timer = useTimer()
 
-  const [selectedSymbol, setSelectedSymbol] = useState<string | undefined>(undefined)
+  const [symbol, setSymbol] = useState<string | undefined>(undefined)
   const [notional, setNotional] = useState<number>(1000000)
   const [showDelta, setShowDelta] = useState<boolean>(false)
 
@@ -38,6 +42,12 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
   const [showBuyPut, setShowBuyPut] = useState<number | undefined>(undefined)
   const [showSellPut, setShowSellPut] = useState<number | undefined>(undefined)
 
+  const [showProfit, setShowProfit] = useState<boolean>(true)
+
+  // const price = useCurrentPriceForSymbol(selectedSymbol)
+  // const volatility = useCurrentVolatilityForSymbol(selectedSymbol)
+  // const rate = useCurrentRateForKey("USD")
+
   const handleToggleDelta = () => {
     setShowDelta(!showDelta)
   }
@@ -47,21 +57,21 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
     setNotional(value)
   }
 
-  const handleTChangeSelectedMarket = (market: Market | undefined) => {
-    setSelectedSymbol(market?.symbol)
+  const handleChangeSelectedMarket = (market: Market | undefined) => {
+    setSymbol(market?.symbol)
   }
 
-  const handleOnClickCost = async (data: any) => {
-    const { cost, direction, contractDelta } = data
+  // const handleOnClickCost = async (data: any) => {
+  //   const { cost, direction, contractDelta } = data
 
-    //alert(JSON.stringify({ item, cost, direction, contractDelta, notional, selectedSymbol }, null, 2))
+  //   //alert(JSON.stringify({ item, cost, direction, contractDelta, notional, selectedSymbol }, null, 2))
 
-    if (selectedSymbol) {
-      const price = await discoverOptionPrice(selectedSymbol, "USD", notional, direction, OptionExecution.European, contractDelta, 30)
+  //   if (symbol) {
+  //     const price = await discoverOptionPrice(symbol, "USD", notional, direction, OptionExecution.European, contractDelta, 30)
 
-      alert([price, cost])
-    }
-  }
+  //     alert([price, cost])
+  //   }
+  // }
 
   const handleUpdateSelection = (selection: string, value: any = undefined) => {
     // alert(selection)
@@ -195,12 +205,12 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
       setShowBuyPut(undefined)
       setShowSellPut(-25)
     } else if (selection === "riskReversal") {
-      setShowMakeCall(undefined)
+      setShowMakeCall(true)
       setShowMakePut(undefined)
       setShowBuyCall(undefined)
-      setShowSellCall(50)
-      setShowBuyPut(undefined)
-      setShowSellPut(25)
+      setShowSellCall(10)
+      setShowBuyPut(-5)
+      setShowSellPut(undefined)
     } else if (selection === "protectiveCollar") {
       setShowMakeCall(true)
       setShowMakePut(undefined)
@@ -208,6 +218,27 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
       setShowSellCall(50)
       setShowBuyPut(undefined)
       setShowSellPut(25)
+    } else if (selection === "longStraddle") {
+      setShowMakeCall(undefined)
+      setShowMakePut(undefined)
+      setShowBuyCall(0)
+      setShowSellCall(undefined)
+      setShowBuyPut(0)
+      setShowSellPut(undefined)
+    } else if (selection === "shortStraddle") {
+      setShowMakeCall(undefined)
+      setShowMakePut(undefined)
+      setShowBuyCall(undefined)
+      setShowSellCall(0)
+      setShowBuyPut(undefined)
+      setShowSellPut(0)
+    } else if (selection === "doubleBull") {
+      setShowMakeCall(undefined)
+      setShowMakePut(undefined)
+      setShowBuyCall(5)
+      setShowSellCall(10)
+      setShowBuyPut(-10)
+      setShowSellPut(-5)
     }
     //else if (selection === "buyPut") {
     //   setShowMakeCall(undefined)
@@ -239,14 +270,14 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
   }
 
   useEffect(() => {
-    let symbol
+    let selectedSymbol
 
-    if (selectedSymbol == null) {
-      symbol = activeMarkets?.[0]?.symbol
+    if (symbol == null) {
+      selectedSymbol = activeMarkets?.[0]?.symbol
 
-      setSelectedSymbol(symbol)
+      setSymbol(selectedSymbol)
     } else {
-      symbol = selectedSymbol
+      selectedSymbol = symbol
     }
 
     async function run(symbol: string, notional: number) {
@@ -255,10 +286,10 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
       setAnalysis(analysis)
     }
 
-    if (symbol) {
-      run(symbol, notional)
+    if (selectedSymbol) {
+      run(selectedSymbol, notional)
     }
-  }, [activeMarkets, selectedSymbol, notional])
+  }, [activeMarkets, symbol, notional])
 
   return (
     <div {...rest} data-component={name}>
@@ -275,7 +306,7 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
       </div>
       <div className="divider" />
       <div className="flex flex-row gap-2 p-2 items-center">
-        <ActiveMarketsSelector selectedSymbol={selectedSymbol} activeMarkets={activeMarkets} onChange={handleTChangeSelectedMarket} />
+        <ActiveMarketsSelector selectedSymbol={symbol} activeMarkets={activeMarkets} onChange={handleChangeSelectedMarket} />
         <div>
           <label className="w-64 input input-bordered border-primary flex items-center gap-2">
             Notional
@@ -287,6 +318,32 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
         <button className={` btn btn-primary btn-sm ${showDelta ? "" : "btn-outline"}`} onClick={handleToggleDelta}>
           Show Delta
         </button>
+
+        {/* <div>{selectedSymbol}</div>
+        <div>
+          <span className="text-secondary">Ask : </span>
+          {formatNumber(price?.currentAsk)}
+        </div>
+        <div>
+          <span className="text-secondary">Bid : </span>
+          {formatNumber(price?.currentBid)}
+        </div>
+        <div>
+          <span className="text-secondary">30 : </span>
+          {formatNumber(volatility?.["30"].volatility)}
+        </div>
+        <div>
+          <span className="text-secondary">60 : </span>
+          {formatNumber(volatility?.["60"].volatility)}
+        </div>
+        <div>
+          <span className="text-secondary">90 : </span>
+          {formatNumber(volatility?.["90"].volatility)}
+        </div>
+        <div>
+          <span className="text-secondary">Rate : </span>
+          {rate?.currentRate}{" "}
+        </div> */}
       </div>
       <div className="divider" />
       <div className="flex flex-col gap-2 p-2">
@@ -325,8 +382,22 @@ export default function BalancePage({ name = "StatusesBalancePagePage", ...rest 
       <div className="flex flex-row gap-2 p-2 overflow-auto">
         {/* <ActionColumn /> */}
 
-        {showMakeCall != null && <TradeBlock source={analysis?.makeCall} showDelta={showDelta} />}
-        {showMakePut != null && <TradeBlock source={analysis?.makePut} showDelta={showDelta} />}
+        {showProfit != null && (
+          <ProfitBlock
+            notional={notional}
+            source={analysis}
+            showMakeCall={showMakeCall}
+            showMakePut={showMakePut}
+            showBuyCall={showBuyCall}
+            showSellCall={showSellCall}
+            showBuyPut={showBuyPut}
+            showSellPut={showSellPut}
+            showDelta={showDelta}
+          />
+        )}
+
+        {showMakeCall != null && <TradeBlock symbol={symbol} source={analysis?.makeCall} showDelta={showDelta} />}
+        {showMakePut != null && <TradeBlock symbol={symbol} source={analysis?.makePut} showDelta={showDelta} />}
 
         {showBuyCall != null && (
           <OptionBlock source={analysis?.buyCall} showDelta={showDelta} selectedDelta={showBuyCall} onUpdateDelta={handleUpdateDelta("buyCall")} />
@@ -505,17 +576,17 @@ const ContractActions = ({ showMakeCall, showMakePut, showBuyCall, showSellCall,
 
   const handleUpdateSelection = (selection: string) => () => {
     if (selection === "showMakeCall") {
-      onChange(selection, showMakeCall === true ? undefined : true)
+      onChange(selection, showMakeCall === undefined ? true : undefined)
     } else if (selection === "showMakePut") {
-      onChange(selection, showMakePut === true ? undefined : true)
+      onChange(selection, showMakePut === undefined ? true : undefined)
     } else if (selection === "showBuyCall") {
-      onChange(selection, showBuyCall === true ? undefined : true)
+      onChange(selection, showBuyCall === undefined ? 0 : undefined)
     } else if (selection === "showSellCall") {
-      onChange(selection, showSellCall === true ? undefined : true)
+      onChange(selection, showSellCall === undefined ? 0 : undefined)
     } else if (selection === "showBuyPut") {
-      onChange(selection, showBuyPut === true ? undefined : true)
+      onChange(selection, showBuyPut === undefined ? 0 : undefined)
     } else if (selection === "showSellPut") {
-      onChange(selection, showSellPut === true ? undefined : true)
+      onChange(selection, showSellPut === undefined ? 0 : undefined)
     }
   }
 
@@ -680,12 +751,27 @@ const MarketActions = ({ showMakeCall, showMakePut, showBuyCall, showSellCall, s
       : unselectedClassName
 
   const riskReversalClassName =
-    showMakeCall == null && showMakePut == null && showBuyCall != null && showSellCall == null && showBuyPut == null && showSellPut != null
+    showMakeCall != null && showMakePut == null && showBuyCall == null && showSellCall != null && showBuyPut != null && showSellPut == null
       ? selectedClassName
       : unselectedClassName
 
   const protectiveCollarClassName =
-    showMakeCall != null && showMakePut == null && showBuyCall != null && showSellCall == null && showBuyPut == null && showSellPut != null
+    showMakeCall != null && showMakePut == null && showBuyCall == null && showSellCall != null && showBuyPut == null && showSellPut != null
+      ? selectedClassName
+      : unselectedClassName
+
+  const longStraddleClassName =
+    showMakeCall == null && showMakePut == null && showBuyCall != null && showSellCall == null && showBuyPut != null && showSellPut == null
+      ? selectedClassName
+      : unselectedClassName
+
+  const shortStraddleClassName =
+    showMakeCall == null && showMakePut == null && showBuyCall == null && showSellCall != null && showBuyPut == null && showSellPut != null
+      ? selectedClassName
+      : unselectedClassName
+
+  const doubleBullClassName =
+    showMakeCall == null && showMakePut == null && showBuyCall != null && showSellCall != null && showBuyPut != null && showSellPut != null
       ? selectedClassName
       : unselectedClassName
 
@@ -724,13 +810,25 @@ const MarketActions = ({ showMakeCall, showMakePut, showBuyCall, showSellCall, s
       <button className={protectiveCollarClassName} onClick={handleUpdateSelection("protectiveCollar")}>
         Protective Collar
       </button>
-      <button className="btn btn-primary btn-outline w-32 h-6 leading-6">Straddle</button>
-      <button className="btn btn-primary btn-outline w-32 h-6 leading-6">Strangle</button>
-      <button className="btn btn-primary btn-outline w-32 h-6 leading-6">Butterfly</button>
-      <button className="btn btn-primary btn-outline w-32 h-6 leading-6">Iron Condor</button>
+      <button className={longStraddleClassName} onClick={handleUpdateSelection("longStraddle")}>
+        Long Straddle
+      </button>
+      <button className={shortStraddleClassName} onClick={handleUpdateSelection("shortStraddle")}>
+        Short Straddle
+      </button>
+      <button className={doubleBullClassName} onClick={handleUpdateSelection("doubleBull")}>
+        Double Bull Spread
+      </button>
+
       <div className="divider divider-horizontal w-1" />
       <button className="btn btn-primary btn-outline w-32 h-6 leading-6" disabled>
+        Strangle
+      </button>
+      <button className="btn btn-primary btn-outline w-32 h-6 leading-6" disabled>
         Long Call Butterfly
+      </button>
+      <button className="btn btn-primary btn-outline w-32 h-6 leading-6" disabled>
+        Iron Condor
       </button>
     </div>
   )
@@ -783,7 +881,7 @@ const TradeRow = ({ outcome, showDelta = false }: { outcome: any; showDelta?: bo
   )
 }
 
-const TradeColumn = ({ source, showDelta = false }: { source: any; showDelta?: boolean }) => {
+const TradeColumn = ({ symbol, source, showDelta = false }: { symbol: string | undefined; source: any; showDelta?: boolean }) => {
   const { direction, outcomes } = source
 
   const displayTitle = direction === TradeDirection.Call ? "Make Call" : "Make Put"
@@ -795,6 +893,7 @@ const TradeColumn = ({ source, showDelta = false }: { source: any; showDelta?: b
       <div className="h-6 text-secondary font-extrabold">{displayTitle}</div>
       <div className="h-4 ">{displayInIcons}</div>
       <div className="h-4 text-secondary">{displayOutIcons}</div>
+
       <div className="divider"></div>
 
       {outcomes?.map((outcome: any) => (
@@ -804,14 +903,289 @@ const TradeColumn = ({ source, showDelta = false }: { source: any; showDelta?: b
   )
 }
 
-const TradeBlock = ({ source, showDelta = false }: { source: any; showDelta?: boolean }) => {
+const TradeBlock = ({ symbol, source, showDelta = false }: { symbol: string | undefined; source: any; showDelta?: boolean }) => {
   if (source == null) {
     return null
   }
 
   return (
     <div className="flex flex-row gap-2 border border-primary rounded ">
-      <TradeColumn source={source} showDelta={showDelta} />
+      <TradeColumn symbol={symbol} source={source} showDelta={showDelta} />
+    </div>
+  )
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const ProfitRow = ({
+  source,
+  outcome,
+  showMakeCall,
+  showMakePut,
+  showBuyCall,
+  showSellCall,
+  showBuyPut,
+  showSellPut,
+  showDelta = false,
+}: {
+  source: any
+  outcome: any
+  showMakeCall?: boolean | undefined
+  showMakePut?: boolean | undefined
+  showBuyCall?: number | undefined
+  showSellCall?: number | undefined
+  showBuyPut?: number | undefined
+  showSellPut?: number | undefined
+  showDelta?: boolean
+}) => {
+  const displayRate = formatNumber(outcome.midRate)
+
+  const displayMinor = displayRate?.split("").reverse().join("").substring(0, 2).split("").reverse().join("")
+  const displayMajor = displayRate?.split("").reverse().join("").substring(2).split("").reverse().join("")
+
+  const outcomeIndex = outcome.index
+
+  let tradeProfit = 0
+
+  if (showMakeCall != null) {
+    tradeProfit += source.makeCall.outcomes[outcomeIndex].tradeProfit
+  }
+
+  if (showMakePut != null) {
+    tradeProfit += source.makePut.outcomes[outcomeIndex].tradeProfit
+  }
+
+  if (showBuyCall != null) {
+    const contractIndex = source.buyCall.contracts.findIndex((contract: any) => contract.delta === showBuyCall)
+    if (contractIndex > -1) {
+      tradeProfit += source.buyCall.contracts[contractIndex].outcomes[outcomeIndex].profit
+    }
+  }
+
+  if (showSellCall != null) {
+    const contractIndex = source.sellCall.contracts.findIndex((contract: any) => contract.delta === showSellCall)
+    if (contractIndex > -1) {
+      tradeProfit += source.sellCall.contracts[contractIndex].outcomes[outcomeIndex].profit
+    }
+  }
+
+  if (showBuyPut != null) {
+    const contractIndex = source.buyPut.contracts.findIndex((contract: any) => contract.delta === showBuyPut)
+    if (contractIndex > -1) {
+      tradeProfit += source.buyPut.contracts[contractIndex].outcomes[outcomeIndex].profit
+    }
+  }
+
+  if (showSellPut != null) {
+    const contractIndex = source.sellPut.contracts.findIndex((contract: any) => contract.delta === showSellPut)
+    if (contractIndex > -1) {
+      tradeProfit += source.sellPut.contracts[contractIndex].outcomes[outcomeIndex].profit
+    }
+  }
+
+  const displayProfit = formatValue(tradeProfit, false)
+
+  let containerClassName = "h-6 w-full flex flex-row gap-1 justify-around"
+  let profitClassName = "w-16 text-right"
+
+  if (outcome.delta === 0) {
+    containerClassName += " text-primary"
+  }
+
+  if (tradeProfit > 0) {
+    profitClassName += " text-success"
+  } else if (tradeProfit < 0) {
+    profitClassName += " text-error"
+  } else {
+    profitClassName += " text-secondary"
+  }
+
+  return (
+    <div className={containerClassName}>
+      {showDelta && (
+        <div className="w-16 text-right">
+          <span>{outcome.delta}</span>
+        </div>
+      )}
+      {!showDelta && (
+        <div className="w-16 text-right">
+          <span>{displayMajor}</span>
+          <span className="text-xs">{displayMinor}</span>
+        </div>
+      )}
+      <div className={profitClassName}>
+        <span>{displayProfit}</span>
+      </div>
+    </div>
+  )
+}
+
+const ProfitColumn = ({
+  source,
+  notional,
+  showMakeCall,
+  showMakePut,
+  showBuyCall,
+  showSellCall,
+  showBuyPut,
+  showSellPut,
+  showDelta = false,
+}: {
+  source: any
+  notional?: number
+  showMakeCall?: boolean | undefined
+  showMakePut?: boolean | undefined
+  showBuyCall?: number | undefined
+  showSellCall?: number | undefined
+  showBuyPut?: number | undefined
+  showSellPut?: number | undefined
+  showDelta?: boolean
+}) => {
+  const { outcomes } = source.profit
+
+  const displayTitle = "Overall Profit"
+
+  let initialMargin
+  let displayInitialMargin
+
+  let maxMarginCall = 0
+  let displayMaxMarginCall
+
+  let displayMargin
+
+  let contractCost = 0
+  let displayContractCost
+
+  if (showMakeCall || showMakePut) {
+    initialMargin = (notional ?? 0) * 0.1
+  }
+
+  if (showMakeCall) {
+    const last = source.makePut.outcomes?.length - 1
+    if (last > 0) {
+      maxMarginCall = Math.min(maxMarginCall, source.makeCall.outcomes[0].tradeProfit, source.makeCall.outcomes[last].tradeProfit)
+    }
+  }
+
+  if (showMakePut) {
+    const last = source.makePut.outcomes?.length - 1
+    if (last > 0) {
+      maxMarginCall = Math.min(maxMarginCall, source.makePut.outcomes[0].tradeProfit, source.makePut.outcomes[last].tradeProfit)
+    }
+  }
+
+  if (showBuyCall != null) {
+    const contractIndex = source.buyCall.contracts?.findIndex((contract: any) => contract.delta === showBuyCall)
+
+    if (contractIndex > -1) {
+      contractCost += source.buyCall.contracts[contractIndex].contractCost
+    }
+  }
+
+  if (showSellCall != null) {
+    const contractIndex = source.sellCall.contracts?.findIndex((contract: any) => contract.delta === showSellCall)
+
+    if (contractIndex > -1) {
+      contractCost -= source.sellCall.contracts[contractIndex].contractCost
+    }
+  }
+
+  if (showBuyPut != null) {
+    const contractIndex = source.buyPut.contracts?.findIndex((contract: any) => contract.delta === showBuyPut)
+
+    if (contractIndex > -1) {
+      contractCost += source.buyPut.contracts[contractIndex].contractCost
+    }
+  }
+
+  if (showSellPut != null) {
+    const contractIndex = source.sellPut.contracts?.findIndex((contract: any) => contract.delta === showSellPut)
+
+    if (contractIndex > -1) {
+      contractCost -= source.sellPut.contracts[contractIndex].contractCost
+    }
+  }
+
+  if (initialMargin != 0) {
+    displayInitialMargin = formatValue(initialMargin, false)
+  }
+
+  if (maxMarginCall != 0) {
+    maxMarginCall = maxMarginCall * -1
+    displayMaxMarginCall = formatValue(maxMarginCall, false)
+  }
+
+  if (displayInitialMargin != null && displayMaxMarginCall != null) {
+    displayMargin = displayInitialMargin + " / " + displayMaxMarginCall
+  }
+
+  if (contractCost > 0) {
+    displayContractCost = formatValue(contractCost, false)
+  }
+
+  return (
+    <div className="w-48 flex flex-col items-center gap-2 p-2">
+      <div className="h-6 text-secondary font-extrabold">{displayTitle}</div>
+      <div className="h-4 text-secondary">{displayMargin}</div>
+      <div className="h-4 ">{displayContractCost}</div>
+      <div className="divider"></div>
+
+      {outcomes?.map((outcome: any) => (
+        <ProfitRow
+          source={source}
+          outcome={outcome}
+          showMakeCall={showMakeCall}
+          showMakePut={showMakePut}
+          showBuyCall={showBuyCall}
+          showSellCall={showSellCall}
+          showBuyPut={showBuyPut}
+          showSellPut={showSellPut}
+          showDelta={showDelta}
+          key={outcome.delta}
+        />
+      ))}
+    </div>
+  )
+}
+
+const ProfitBlock = ({
+  notional,
+  source,
+  showMakeCall,
+  showMakePut,
+  showBuyCall,
+  showSellCall,
+  showBuyPut,
+  showSellPut,
+  showDelta = false,
+}: {
+  source: any
+  notional: number
+  showMakeCall?: boolean | undefined
+  showMakePut?: boolean | undefined
+  showBuyCall?: number | undefined
+  showSellCall?: number | undefined
+  showBuyPut?: number | undefined
+  showSellPut?: number | undefined
+  showDelta?: boolean
+}) => {
+  if (source == null) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-row gap-2 border border-primary rounded ">
+      <ProfitColumn
+        source={source}
+        notional={notional}
+        showMakeCall={showMakeCall}
+        showMakePut={showMakePut}
+        showBuyCall={showBuyCall}
+        showSellCall={showSellCall}
+        showBuyPut={showBuyPut}
+        showSellPut={showSellPut}
+        showDelta={showDelta}
+      />
     </div>
   )
 }
@@ -981,14 +1355,18 @@ const OptionColumn = ({
   const displayMinor = displayRate?.split("").reverse().join("").substring(0, 2).split("").reverse().join("")
   const displayMajor = displayRate?.split("").reverse().join("").substring(2).split("").reverse().join("")
 
-  let cost = source.contractCost
+  let unitCost = source.unitCost
+  let contractCost = source.contractCost
+
   const contractDelta = source.delta
 
-  if (cost < 50) {
-    cost = null
+  if (contractCost < 50) {
+    unitCost = null
+    contractCost = null
   }
 
-  const displayCost = cost == null ? null : formatValue(cost, false)
+  const displayUnitCost = unitCost == null ? null : formatNumber(unitCost * 100, 4) + "%"
+  const displayContractCost = contractCost == null ? null : formatValue(contractCost, false)
 
   const buttonClassBase = "btn btn-sm btn-primary"
 
@@ -1015,15 +1393,15 @@ const OptionColumn = ({
       </div>
 
       <div className="h-8 ">
-        {cost != null && (
+        {contractCost != null && (
           <button className={displayButtonClass} onClick={handleUpdateDelta(contractDelta)}>
-            {displayCost}
+            {showDelta ? displayUnitCost : displayContractCost}
           </button>
         )}
       </div>
       <div className="divider"></div>
       {source.outcomes?.map((item: any) => (
-        <OptionRow item={item} cost={cost} contractDelta={contractDelta} direction={direction} onClick={onClick} />
+        <OptionRow item={item} cost={contractCost} contractDelta={contractDelta} direction={direction} onClick={onClick} />
       ))}
     </div>
   )

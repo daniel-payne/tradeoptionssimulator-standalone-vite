@@ -24,6 +24,17 @@ export async function controller(db: PriceSimulatorDexie) {
 
     const { id, amount, direction, entryPrice, entryValue, expiryIndex, stopLoss, takeProfit } = activeTrade ?? {}
 
+    let priceModifier = market?.priceModifier ?? 1
+    let priceSize = market?.priceSize ?? 1
+
+    if (!Number.isFinite(priceModifier)) {
+      priceModifier = 1
+    }
+
+    if (!Number.isFinite(priceSize)) {
+      priceSize = 1
+    }
+
     if (currentIndex != null && price != null && entryPrice != null && entryValue != null && expiryIndex != null) {
       const currentPrice = direction === "CALL" ? price.priorClosingAsk : price.priorClosingBid
 
@@ -31,7 +42,7 @@ export async function controller(db: PriceSimulatorDexie) {
 
       const currentPercent = currentDifference / entryPrice
 
-      const currentValue = ((currentPrice * (market?.priceModifier ?? 1)) / (market?.priceSize ?? 1)) * amount
+      const currentValue = ((currentPrice * priceModifier) / priceSize) * amount
 
       const currentProfit = direction === "CALL" ? currentValue - entryValue : entryValue - currentValue
 

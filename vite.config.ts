@@ -17,6 +17,7 @@ export default defineConfig({
     ],
   },
   server: {
+    port: 5080,
     watch: {
       ignored: ["**/source_data/**"],
     },

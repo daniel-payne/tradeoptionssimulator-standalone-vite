@@ -15,64 +15,64 @@ import recalculateAll from "./recalculateAll"
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
   const currentTimer = await getTimer()
 
-  db.transaction(
-    "rw",
-    [
-      "currencies",
-      "currencyRates",
-      "currentBalance",
-      "currentPrices",
-      "currentRates",
-      "currentMargins",
-      "currentVolatilities",
-      "overnightVolatilities",
-      "parkinsonVolatilities",
-      "rogersSatchellVolatilities",
-      "garminKlassVolatilities",
-      "yangZhangVolatilities",
-      "marketCloses",
-      "marketHighs",
-      "marketLows",
-      "marketOpens",
-      "markets",
-      "priceSummaries",
-      "rateSummaries",
-      "timer",
-      "trades",
-      "transactions",
-    ],
-    async () => {
-      const currentIndex = (currentTimer?.currentIndex ?? 0) + 1
+  // db.transaction(
+  //   "rw",
+  //   [
+  //     "currencies",
+  //     "currencyRates",
+  //     "currentBalance",
+  //     "currentPrices",
+  //     "currentRates",
+  //     "currentMargins",
+  //     "currentVolatilities",
+  //     "overnightVolatilities",
+  //     "parkinsonVolatilities",
+  //     "rogersSatchellVolatilities",
+  //     "garminKlassVolatilities",
+  //     "yangZhangVolatilities",
+  //     "marketCloses",
+  //     "marketHighs",
+  //     "marketLows",
+  //     "marketOpens",
+  //     "markets",
+  //     "priceSummaries",
+  //     "rateSummaries",
+  //     "timer",
+  //     "trades",
+  //     "transactions",
+  //   ],
+  //   async () => {
+  const currentIndex = (currentTimer?.currentIndex ?? 0) + 1
 
-      const isOwner = takeControl === true ? true : currentTimer?.guid === db.guid
+  const isOwner = takeControl === true ? true : currentTimer?.guid === db.guid
 
-      let isTimerActive = takeControl === true ? true : currentTimer?.isTimerActive === true
+  let isTimerActive = takeControl === true ? true : currentTimer?.isTimerActive === true
 
-      if (isOwner && isTimerActive) {
-        if (takeControl === true) {
-          isTimerActive = false
+  if (isOwner && isTimerActive) {
+    if (takeControl === true) {
+      isTimerActive = false
 
-          await updateTimer({ guid: db.guid, currentIndex, isTimerActive })
-        } else {
-          await updateTimer({ currentIndex: currentIndex })
-        }
-
-        await recalculateAll()
-      }
+      await updateTimer({ guid: db.guid, currentIndex, isTimerActive })
+    } else {
+      await updateTimer({ currentIndex: currentIndex })
     }
-  )
-    .then(async () => {
-      const { speed, isTimerActive } = currentTimer ?? {}
 
-      if (isTimerActive === true) {
-        db.timeout = window.setTimeout(() => {
-          controller(db, takeControl)
-        }, speed ?? ScenarioSpeed.Slow)
-      }
-    })
-    .catch((err) => {
-      console.error(err.stack)
-    })
+    await recalculateAll()
+  }
+  //  }
+  // )
+  //   .then(async () => {
+  const { speed } = currentTimer ?? {}
+
+  if (isTimerActive === true) {
+    db.timeout = window.setTimeout(() => {
+      controller(db, takeControl)
+    }, speed ?? ScenarioSpeed.Slow)
+  }
+  //     })
+  //     .catch((err) => {
+  //       console.error(err.stack)
+  //     })
 }
 
 export default function timerNextDay(takeControl = false) {

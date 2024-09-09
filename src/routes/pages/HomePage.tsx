@@ -9,7 +9,7 @@ type ComponentProps = {
 export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
     <div {...rest} data-component={name}>
-      <div className="h-full w-full m-4 flex flex-col">
+      <div className="h-full w-full m-4 flex flex-col ">
         <div className="divider">Actions</div>
         <div className="m-4 flex flex-row flex-wrap gap-4">
           <Link to="/actions" className="w-48  btn btn-primary">

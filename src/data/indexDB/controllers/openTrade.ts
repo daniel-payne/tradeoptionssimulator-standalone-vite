@@ -30,8 +30,19 @@ export async function controller(
   const entryIndex = timer?.currentIndex
   const expiryIndex = lastIndexOfMonth(entryIndex, "WED", 1)
 
+  let priceModifier = market?.priceModifier ?? 1
+  let priceSize = market?.priceSize ?? 1
+
+  if (!Number.isFinite(priceModifier)) {
+    priceModifier = 1
+  }
+
+  if (!Number.isFinite(priceSize)) {
+    priceSize = 1
+  }
+
   if (market != null && entryIndex != null && entryPrice != null) {
-    const entryValue = ((entryPrice * (market?.priceModifier ?? 1)) / (market?.priceSize ?? 1)) * amount
+    const entryValue = ((entryPrice * priceModifier) / priceSize) * amount
 
     if (price != null) {
       const newContract = {

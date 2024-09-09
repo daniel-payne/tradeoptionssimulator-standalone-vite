@@ -7,7 +7,7 @@ import { controller as recalculateCurrentRates } from "./recalculateCurrentRates
 import { controller as recalculateCurrentMargins } from "./recalculateCurrentMargins"
 import { controller as recalculateCurrentVolatilities } from "./recalculateCurrentVolatilities"
 
-import closeAllTrades from "./CloseAllTrades"
+import closeAllTrades from "./closeAllTrades"
 import closeExpiringTrades from "./closeExpiringTrades"
 
 export async function controller(db: PriceSimulatorDexie) {

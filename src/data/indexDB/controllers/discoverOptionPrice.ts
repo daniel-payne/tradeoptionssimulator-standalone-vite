@@ -7,7 +7,7 @@ import calculateOptionCosts from "../calculate/calculateOptionCosts"
 import { OptionExecution } from "../enums/OptionExecution"
 import { OptionDirection } from "../enums/OptionDirection"
 
-const MIN_CONTRACT_COST = 50
+const MIN_CONTRACT_COST = 250
 const CONTRACT_MARKUP = 0.06
 
 export async function controller(
@@ -27,6 +27,7 @@ export async function controller(
   if (currentPrice == null || currentVolatility == null || currentRate == null) {
     return
   }
+
   const matchDuration =
     [30, 60, 90].reduce((acc: any, curr) => {
       if (duration >= curr && acc != null) {
@@ -36,47 +37,63 @@ export async function controller(
 
   const durationVolatility = currentVolatility[matchDuration]
 
-  if (durationVolatility == null) {
-    return
-  }
-
-  const isMarketActive = currentPrice?.isMarketActive
-  const isMarketClosed = currentPrice?.isMarketClosed
-  const priorClose = currentPrice?.priorClose
-  const askPrice = currentPrice?.currentAsk
-  const bidPrice = currentPrice?.currentBid
-  const volatility = durationVolatility.volatility
+  const volatility = durationVolatility?.volatility
   const rate = currentRate.currentRate
 
-  if (isMarketActive === false || isMarketClosed === true || askPrice == null || bidPrice == null || priorClose == null || rate == null) {
-    return
-  }
+  // const calculation = await calculateOptionCosts(
+  //   notional,
+  //   spotPrice,
+  //   strikePrice,
+  //   matchDuration,
+  //   execution,
 
-  const spotPrice = direction === OptionDirection.BuyCall || OptionDirection.SellCall ? askPrice : bidPrice
+  //   volatility,
+  //   rate
+  // )
 
-  const midPrice = (askPrice + bidPrice) / 2
+  // const durationVolatility = currentVolatility[matchDuration]
 
-  let deltaFactor = 1 / 10000
+  // if (durationVolatility == null) {
+  //   return
+  // }
 
-  if (midPrice < 10) {
-    deltaFactor = 1 / 10000
-  } else if (midPrice < 100) {
-    deltaFactor = 1 / 1000
-  } else if (midPrice < 1000) {
-    deltaFactor = 1 / 100
-  }
+  // const isMarketActive = currentPrice?.isMarketActive
+  // const isMarketClosed = currentPrice?.isMarketClosed
+  // const priorClose = currentPrice?.priorClose
+  // const askPrice = currentPrice?.currentAsk
+  // const bidPrice = currentPrice?.currentBid
+  // const volatility = durationVolatility.volatility
+  // const rate = currentRate.currentRate
 
-  const strikePrice = spotPrice + deltaFactor * delta
+  // if (isMarketActive === false || isMarketClosed === true || askPrice == null || bidPrice == null || priorClose == null || rate == null) {
+  //   return
+  // }
 
-  const calculation = await calculateOptionCosts(notional, spotPrice, strikePrice, duration, execution, volatility, rate)
+  // const spotPrice = direction === OptionDirection.BuyCall || OptionDirection.SellCall ? askPrice : bidPrice
 
-  const markup = OptionDirection.BuyCall || OptionDirection.BuyCall ? 1 + CONTRACT_MARKUP : 1 - CONTRACT_MARKUP
+  // const midPrice = (askPrice + bidPrice) / 2
 
-  const unitCost = OptionDirection.BuyCall || OptionDirection.SellCall ? calculation.option.call.price : calculation.option.put.price
+  // let deltaFactor = 1 / 10000
 
-  const contractCost = (notional / spotPrice) * unitCost * markup
+  // if (midPrice < 10) {
+  //   deltaFactor = 1 / 10000
+  // } else if (midPrice < 100) {
+  //   deltaFactor = 1 / 1000
+  // } else if (midPrice < 1000) {
+  //   deltaFactor = 1 / 100
+  // }
 
-  return contractCost > MIN_CONTRACT_COST ? contractCost : undefined
+  // const strikePrice = spotPrice + deltaFactor * delta
+
+  // const calculation = await calculateOptionCosts(notional, spotPrice, strikePrice, duration, execution, volatility, rate)
+
+  // const markup = OptionDirection.BuyCall || OptionDirection.BuyCall ? 1 + CONTRACT_MARKUP : 1 - CONTRACT_MARKUP
+
+  // const unitCost = OptionDirection.BuyCall || OptionDirection.SellCall ? calculation.option.call.price : calculation.option.put.price
+
+  // const contractCost = (notional / spotPrice) * unitCost * markup
+
+  // return contractCost > MIN_CONTRACT_COST ? contractCost : undefined
 }
 
 export default function discoverOptionPrice(

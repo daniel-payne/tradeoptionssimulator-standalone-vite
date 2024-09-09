@@ -29,7 +29,7 @@ import AnalysisPage from "./routes/pages/AnalysisPage"
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage className="h-full w-full" />,
+    element: <HomePage className="h-full w-full  overflow-x-hidden" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/analysis",
-    element: <AnalysisPage className="h-full w-full" />,
+    element: <AnalysisPage className="h-full w-full overflow-y-hidden" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {

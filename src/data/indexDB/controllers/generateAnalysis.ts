@@ -9,12 +9,13 @@ import { OptionExecution } from "../enums/OptionExecution"
 
 import calculateOptionCosts from "../calculate/calculateOptionCosts"
 
-const MIN_CONTRACT_COST = 50
-const CONTRACT_MARKUP = 0.06
+const MIN_CONTRACT_COST = 250
+const CONTRACT_MARKUP = 0.075
 
 const DEFAULT_DELTA_POINTS = [500, 250, 100, 50, 25, 10, 5, 0, -5, -10, -25, -50, -100, -250, -500]
 
 const EMPTY_ANALYSIS = {
+  profit: {},
   makeCall: { direction: TradeDirection.Call },
   makePut: { direction: TradeDirection.Put },
   buyCall: { direction: OptionDirection.BuyCall, execution: OptionExecution.European },
@@ -91,6 +92,8 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, notion
     deltaFactor = 1
   }
 
+  analysis.profit = { outcomes: [] }
+
   analysis.makeCall = { direction: TradeDirection.Call, outcomes: [] }
   analysis.makePut = { direction: TradeDirection.Put, outcomes: [] }
 
@@ -103,9 +106,13 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, notion
     return analysis
   }
 
-  DEFAULT_DELTA_POINTS.forEach((delta) => {
+  DEFAULT_DELTA_POINTS.forEach((delta, index) => {
     const askRate = askPrice + deltaFactor * delta
     const bidRate = bidPrice + deltaFactor * delta
+
+    const midRate = (askRate + bidRate) / 2
+
+    analysis.profit.outcomes.push({ delta, index, askRate, bidRate, midRate })
 
     analysis.makeCall.outcomes.push({ delta, rate: askRate })
     analysis.makePut.outcomes.push({ delta, rate: bidRate })

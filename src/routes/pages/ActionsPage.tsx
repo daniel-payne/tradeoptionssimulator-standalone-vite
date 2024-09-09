@@ -41,6 +41,8 @@ import openTrade from "@/data/indexDB/controllers/openTrade"
 
 import discoverOptionPrice from "@/data/indexDB/controllers/discoverOptionPrice"
 import formatValue from "@/utilities/formatValue"
+import usePriceSummaries from "@/data/indexDB/hooks/usePriceSummaries"
+import calculateOptionCosts from "@/data/indexDB/calculate/calculateOptionCosts"
 // import openTrade from "@/data/indexDB/controllers/openTrade"
 
 type ComponentProps = {
@@ -49,6 +51,7 @@ type ComponentProps = {
 
 export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const timer = useTimer()
+  const priceSummaries = usePriceSummaries()
 
   const [deposit, setDeposit] = useState<number>(1000)
 
@@ -237,28 +240,34 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
   }
 
   const actionDiscoverPrimaryPrice = async () => {
-    // const price = getPriceSummaryForSymbol(symbol)
-    // const rate = getRateForKey('USD')
-
-    // const spotPrice: number = 100
-    // const strikePrice: number = 100
-    // const range: number = 30
-    // const volatility: number = 0.04
-    // const interestRate: number = 0.9
-    // const type: string = "european" // american
-
-    // const option = await calculateOption(spotPrice, strikePrice, range, volatility, interestRate, type)
-
-    const duration = 30 // optionExpiry - (timer?.currentIndex ?? 0)
-
-    const delta = primaryDelta != null ? Number.parseFloat(primaryDelta) : 0
-
-    // const optionData = await discoverOptionPrice(symbol, "USD", optionDirection, optionChoice, optionExecution, delta, duration, amount)
-
-    // setOptionData(optionData)
-
-    // setOptionPrice(formatValue(optionData?.output?.costPrice, false))
+    // const calculation = await calculateOptionCosts(
+    //   notional,
+    //   contract.spotPrice,
+    //   contract.strikePrice,
+    //   matchDuration,
+    //   contract.execution,
+    //   volatility,
+    //   rate
+    // )
+    // const unitCost = calculation.option.call.price * (1 + CONTRACT_MARKUP)
+    // const contractCost = (notional / contract.strikePrice) * unitCost
+    // contract.calculation = calculation
+    // contract.unitCost = unitCost
+    // if (contractCost > MIN_CONTRACT_COST) {
+    //   contract.contractCost = contractCost
+    //   contract.outcomes.forEach((outcome) => {
+    //     const outcomeRate = outcome.rate
+    //     const percentage = (outcomeRate - contract.strikePrice) / contract.strikePrice
+    //     const tradeProfit = percentage * notional
+    //     outcome.percentage = percentage
+    //     outcome.tradeProfit = tradeProfit
+    //     outcome.contractCost = contractCost
+    //     const profit = tradeProfit - contractCost
+    //     outcome.profit = profit < contractCost * -1 ? contractCost * -1 : profit
+    //   })
+    // }
   }
+
   const actionOpenPrimaryOption = async () => {}
   const actionExecutePrimaryOption = async () => {
     setPrimaryID(undefined)
@@ -299,6 +308,7 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
               Clear User Data
             </button>
           </div>
+          <div className="mx-4 flex flex-row">{priceSummaries?.length ?? "No"} Markets loaded</div>
 
           <div className="divider">Timer</div>
           <div className="m-4 flex flex-row flex-wrap gap-4 items-center">
@@ -325,6 +335,24 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
             </button>
             <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2000-01-09")}>
               Reset 2000
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2010-01-05")}>
+              Reset 2010
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2015-01-05")}>
+              Reset 2015
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2016-01-05")}>
+              Reset 2016
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2017-01-05")}>
+              Reset 2017
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2018-01-04")}>
+              Reset 2018
+            </button>
+            <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2019-01-07")}>
+              Reset 2019
             </button>
             <button className="btn btn-sm btn-secondary" onClick={() => timerReset("2020-01-05")}>
               Reset 2020

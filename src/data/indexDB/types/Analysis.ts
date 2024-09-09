@@ -26,7 +26,11 @@ export type Analysis = {
   volatility?: number | null | undefined
   rate?: number | null | undefined
 
-  priceDeltas: Array<{ delta: number; rate?: number; percentage?: number | undefined }>
+  priceDeltas: Array<{ delta: number; rate?: number; profit?: number | undefined }>
+
+  profit: {
+    outcomes: { index: number; delta: number; midRate: number; askRate: number; bidRate: number }[]
+  }
 
   makeCall: {
     direction: TradeDirection

@@ -34,6 +34,17 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
   let entryPrice
   let entryCost
 
+  let priceModifier = market?.priceModifier ?? 1
+  let priceSize = market?.priceSize ?? 1
+
+  if (!Number.isFinite(priceModifier)) {
+    priceModifier = 1
+  }
+
+  if (!Number.isFinite(priceSize)) {
+    priceSize = 1
+  }
+
   if (size != null) {
     if (price?.isMarketClosed) {
       entryPrice = price?.nextOpen
@@ -53,7 +64,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
   if (market != null && entryIndex != null && entryPrice != null) {
     const amount = size * market?.contractSize
 
-    const entryValue = ((entryPrice * (market?.priceModifier ?? 1)) / (market?.priceSize ?? 1)) * amount
+    const entryValue = ((entryPrice * priceModifier) / priceSize) * amount
 
     if (price != null) {
       const newContract = {
