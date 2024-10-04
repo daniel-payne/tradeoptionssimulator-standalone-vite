@@ -1,12 +1,16 @@
-import { Market } from "@/data/indexDB/types/Market"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
-  market: Market
+  market: MarketOrNothing
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketNameDescription({ market, name = "MarketNameDescription", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null) {
+    return
+  }
+
   const showDescription = market.description.length > 0 // && market.name.length <= 7
 
   return (

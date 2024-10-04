@@ -1,10 +1,10 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaFileLines, FaChartLine, FaList, FaTableColumns, FaMoneyCheckDollar } from "react-icons/fa6"
+import { FaFileLines, FaChartLine, FaList, FaTableColumns, FaMoneyCheckDollar, FaChartArea } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-export type Content = "info" | "price" | "chart" | "form" | "both"
+export type Content = "none" | "info" | "price" | "sparkline" | "chart" | "form" | "both"
 
 type ComponentProps = {
   name?: string
@@ -22,11 +22,13 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
 
   const handleClickINF = handleClick("info")
   const handleClickPRI = handleClick("price")
+  const handleClickSPL = handleClick("sparkline")
   const handleClickCHA = handleClick("chart")
   const handleClickFOR = handleClick("form")
   const handleClickBOT = handleClick("both")
 
   let classNameCHA = UNSELECTED_BUTTON
+  let classNameSPL = UNSELECTED_BUTTON
   let classNameFOR = UNSELECTED_BUTTON
   let classNameBOT = UNSELECTED_BUTTON
   let classNameINF = UNSELECTED_BUTTON
@@ -35,6 +37,9 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
   switch (view) {
     case "chart":
       classNameCHA = SELECTED_BUTTON
+      break
+    case "sparkline":
+      classNameSPL = SELECTED_BUTTON
       break
     case "form":
       classNameFOR = SELECTED_BUTTON
@@ -59,9 +64,14 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
         <div className={classNamePRI} onClick={handleClickPRI}>
           <FaMoneyCheckDollar />
         </div>
+        <div className="tooltip tooltip-open tooltip-bottom" data-tooltip="Sparkline">
+          <div className={classNameSPL} onClick={handleClickSPL}>
+            <FaChartLine />
+          </div>
+        </div>
         <div className="tooltip tooltip-open tooltip-bottom" data-tooltip="Graph">
           <div className={classNameCHA} onClick={handleClickCHA}>
-            <FaChartLine />
+            <FaChartArea />
           </div>
         </div>
         <div className={classNameFOR} onClick={handleClickFOR}>

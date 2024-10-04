@@ -11,66 +11,55 @@ import "./main.css"
 
 import capitalizedWord from "@/utilities/capitalizedWord"
 
-import TimerDataPage from "@/routes/pages/data/TimerDataPage"
-import DataIndexPage from "@/routes/pages/data/DataIndexPage"
-import ScenariosDataPage from "@/routes/pages/data/ScenariosDataPage"
-import MarketsDataPage from "@/routes/pages/data/MarketsDataPage"
-import OHLCDataPage from "@/routes/pages/data/OHLCDataPage"
-import CurrenciesDataPage from "./routes/pages/data/CurrenciesDataPage"
-import RatesDataPage from "./routes/pages/data/RatesDataPage"
-import TradesDataPage from "./routes/pages/data/TradesDataPage"
-import TransactionsDataPage from "./routes/pages/data/TransactionsDataPage"
-import SymbolsDataPage from "./routes/pages/data/SymbolsDataPage"
+import TestHooksPage from "./routes/pages/data/TestHooksPage"
+import TestLayoutPage from "./routes/pages/data/TestLayoutPage"
+import TestControllersPage from "@/routes/pages/data/TestControllersPage"
+import TestIndexPage from "./routes/pages/data/TestIndexPage"
+import HomePage from "./routes/pages/HomePage"
+import TradingPage from "./routes/pages/TradingPage"
+import ScenariosPage from "./routes/pages/ScenariosPage"
+import PricesPage from "./routes/pages/PricesPage"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DataIndexPage className="h-full w-full" />,
+    element: <HomePage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/timer",
-    element: <TimerDataPage className="h-full w-full" />,
+    path: "/scenarios",
+    element: <ScenariosPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/scenarios",
-    element: <ScenariosDataPage className="h-full w-full" />,
+    path: "/prices",
+    element: <PricesPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/markets",
-    element: <MarketsDataPage className="h-full w-full" />,
+    path: "/trading/:symbol",
+    element: <TradingPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+  },
+
+  {
+    path: "/test",
+    element: <TestIndexPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/currencies",
-    element: <CurrenciesDataPage className="h-full w-full" />,
+    path: "/test/controllers",
+    element: <TestControllersPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/ohlc",
-    element: <OHLCDataPage className="h-full w-full" />,
+    path: "/test/hooks",
+    element: <TestHooksPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/data/rates",
-    element: <RatesDataPage className="h-full w-full" />,
-    errorElement: <ErrorPage className="h-full w-full" />,
-  },
-  {
-    path: "/data/trades",
-    element: <TradesDataPage className="h-full w-full" />,
-    errorElement: <ErrorPage className="h-full w-full" />,
-  },
-  {
-    path: "/data/transactions",
-    element: <TransactionsDataPage className="h-full w-full" />,
-    errorElement: <ErrorPage className="h-full w-full" />,
-  },
-  {
-    path: "/data/symbols",
-    element: <SymbolsDataPage className="h-full w-full" />,
+    path: "/test/layout",
+    element: <TestLayoutPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
 ])

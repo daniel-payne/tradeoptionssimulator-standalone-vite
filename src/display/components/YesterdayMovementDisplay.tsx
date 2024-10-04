@@ -1,10 +1,10 @@
-import { Price } from "@/data/indexDB/types/Price"
+import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 import { FaArrowTrendUp, FaArrowTrendDown, FaArrowRight, FaMinus } from "react-icons/fa6"
 
 type ComponentProps = {
-  price?: Price | null | undefined
+  price?: PriceOrNothing
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>

@@ -7,6 +7,12 @@ import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 import type { Currency } from "@/data/indexDB/types/Currency"
 
 export async function controller(db: PriceSimulatorDexie) {
+  const count = await db.currencies.count()
+
+  if (count > 0) {
+    return
+  }
+
   const response = await fetch(`/source_data/Currencies.csv`, {})
 
   if (response.ok === false) {

@@ -7,13 +7,15 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 export type View = "expanded" | "contracted"
 
 type ComponentProps = {
+  isDisabled?: boolean
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-export default function ViewChooser({ name = "ViewChooser", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ViewChooser({ isDisabled = false, name = "ViewChooser", ...rest }: PropsWithChildren<ComponentProps>) {
   const [view, setView] = useQueryState<View>("view", "expanded")
 
   const handleClick = (range: View) => {
@@ -38,12 +40,12 @@ export default function ViewChooser({ name = "ViewChooser", ...rest }: PropsWith
   return (
     <div {...rest} data-component={name}>
       <div className="flex flex-row gap-2 justify-center items-center">
-        <div className={classNameEXP} onClick={handleClickEXP}>
-          <FaArrowDownShortWide />
-        </div>
-        <div className={classNameCON} onClick={handleClickCON}>
+        <button className={classNameCON} onClick={handleClickCON} disabled={isDisabled}>
           <FaArrowUpShortWide />
-        </div>
+        </button>
+        <button className={classNameEXP} onClick={handleClickEXP} disabled={isDisabled}>
+          <FaArrowDownShortWide />
+        </button>
       </div>
     </div>
   )

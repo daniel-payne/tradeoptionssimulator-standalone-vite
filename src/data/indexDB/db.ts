@@ -2,6 +2,8 @@ import Dexie, { Table } from "dexie"
 
 import generateID from "@/utilities/generateID"
 
+import { controller as applicationLoad } from "./controllers/applicationLoad"
+
 import type { Timer } from "@/data/indexDB/types/Timer"
 import type { Scenario } from "@/data/indexDB/types/Scenario"
 import type { Market } from "@/data/indexDB/types/Market"
@@ -9,7 +11,6 @@ import type { Trade } from "@/data/indexDB/types/Trade"
 import type { Transaction } from "@/data/indexDB/types/Transaction"
 import type { MarketData } from "./types/MarketData"
 import type { CurrencyData } from "./types/CurrencyData"
-
 import type { Currency } from "./types/Currency"
 
 export const DIXIE_BALANCE_KEY = "DIXIE_BALANCE_KEY"
@@ -73,7 +74,7 @@ export class PriceSimulatorDexie extends Dexie {
 const db = new PriceSimulatorDexie()
 
 db.on("ready", function () {
-  // loadApplication(db)
+  applicationLoad(db)
   // window.addEventListener("onbeforeunload", async () => {
   //   const id = db.guid
   //   const collection = await db.status.limit(1)

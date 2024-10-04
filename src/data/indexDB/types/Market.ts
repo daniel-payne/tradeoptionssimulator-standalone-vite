@@ -4,3 +4,5 @@ export type Market = {
 
   [index: string]: any
 }
+
+export type MarketOrNothing = Market | null | undefined

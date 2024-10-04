@@ -13,7 +13,7 @@ import type { Range } from "@/display/controllers/RangeChooser"
 
 import cssVar from "@/utilities/cssVar"
 
-import { Price } from "@/data/indexDB/types/Price"
+import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import isoShiftedBy from "@/utilities/isoShiftedBy"
 
 import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
@@ -24,7 +24,7 @@ type ComponentProps = {
   marketHighs?: Array<number | null | undefined> | null | undefined
   marketLows?: Array<number | null | undefined> | null | undefined
 
-  price?: Price | null | undefined
+  price?: PriceOrNothing
 
   range?: Range | null | undefined
   showYScale: boolean | null | undefined

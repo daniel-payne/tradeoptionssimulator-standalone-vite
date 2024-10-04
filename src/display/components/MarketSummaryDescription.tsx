@@ -1,4 +1,4 @@
-import { Market } from "@/data/indexDB/types/Market"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import formatIndexAsDate from "@/utilities/formatIndexAsDate"
 import formatIndexAsDay from "@/utilities/formatIndexAsDay"
 
@@ -10,6 +10,10 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketSummaryDescription({ market, name = "MarketSummaryDescription", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null) {
+    return
+  }
+
   if (market.firstActiveIndex == null) {
     return <div>Data not loaded</div>
   }

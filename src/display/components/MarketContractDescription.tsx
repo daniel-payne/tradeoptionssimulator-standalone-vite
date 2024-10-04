@@ -1,14 +1,18 @@
-import { Market } from "@/data/indexDB/types/Market"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import capitalizedWord from "@/utilities/capitalizedWord"
 import formatNumber from "@/utilities/formatNumber"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
-  market: Market
+  market: MarketOrNothing
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketContractDescription({ market, name = "MarketContractDescription", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null) {
+    return
+  }
+
   let displayContractName = capitalizedWord(market.contractName)
   let displayContractSize
 

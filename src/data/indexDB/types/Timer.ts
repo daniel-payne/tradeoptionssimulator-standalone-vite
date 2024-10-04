@@ -9,3 +9,5 @@ export type Timer = {
 
   isTimerActive?: boolean
 }
+
+export type TimerOrNothing = Timer | null | undefined

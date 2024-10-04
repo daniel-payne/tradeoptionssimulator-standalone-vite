@@ -4,7 +4,7 @@ import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
-import timerLoad from "./timerLoad"
+// import timerLoad from "./timerLoad.old"
 
 import updateTimer from "./timerUpdate"
 
@@ -12,7 +12,13 @@ import updateTimer from "./timerUpdate"
 // import recalculateMargins from "./recalculateMargins"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
-  const currentTimer = await timerLoad()
+  // const currentTimer = await timerLoad()
+
+  const currentTimer = await db.timer.limit(1).first()
+
+  if (currentTimer == null) {
+    return
+  }
 
   let isTimerActive = currentTimer.isTimerActive
 

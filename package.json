@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@keldan-systems/state-mutex": "^0.0.33",
+    "@keldan-systems/state-mutex": "^0.0.34",
     "@types/papaparse": "^5.3.14",
     "@types/react-window": "^1.8.8",
     "@types/sort-by": "^1.2.3",
@@ -33,11 +33,11 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.9",
+    "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "autoprefixer": "^10.4.20",
     "daisyui": "latest",
     "eslint": "^9.11.1",

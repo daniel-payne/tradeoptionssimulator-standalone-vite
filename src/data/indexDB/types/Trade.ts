@@ -27,3 +27,5 @@ export type Trade = {
 
   [index: string]: any
 }
+
+export type TradeOrNothing = Trade | null | undefined

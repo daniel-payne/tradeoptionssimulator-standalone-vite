@@ -25,8 +25,6 @@ export async function controller(_: PriceSimulatorDexie, symbol: string | undefi
 
   setState("MARKET-FAVORITES", newFavorites, StoragePersistence.local)
 
-  console.log(getStore())
-
   return symbol
 }
 

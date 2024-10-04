@@ -1,0 +1,51 @@
+import useClosesFor from "@/data/indexDB/hooks/useClosesFor"
+import type { HTMLAttributes, PropsWithChildren } from "react"
+import DataSparklineDisplay from "../elements/ClosesDisplay"
+import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
+import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
+import useHighsFor from "@/data/indexDB/hooks/useHighsFor"
+import useLowsFor from "@/data/indexDB/hooks/useLowsFor"
+import HighLowsDisplay from "../elements/HighLowsDisplay"
+import useActiveTradesFor from "@/data/indexDB/hooks/useActiveTradesFor"
+import useInactiveTradesFor from "@/data/indexDB/hooks/useInactiveTradesFor"
+
+type ComponentProps = {
+  symbol: string
+  name?: string
+} & HTMLAttributes<HTMLDivElement>
+
+export default function HighLowManager({ symbol, name = "HighLowManager", ...rest }: PropsWithChildren<ComponentProps>) {
+  const highs = useHighsFor(symbol)
+  const lows = useLowsFor(symbol)
+  const closes = useClosesFor(symbol)
+
+  const price = usePriceFor(symbol)
+
+  const activeTrades = useActiveTradesFor(symbol)
+  const inactiveTrades = useInactiveTradesFor(symbol)
+
+  const range = useRangeSelection()
+
+  if (price == null) {
+    return (
+      <div className="h-32 flex flex-col items-center justify-center">
+        <span>Loading</span>
+      </div>
+    )
+  }
+
+  return (
+    <div {...rest} data-controller={name}>
+      <HighLowsDisplay
+        className="h-full w-full"
+        highs={highs}
+        lows={lows}
+        closes={closes}
+        price={price}
+        activeTrades={activeTrades}
+        inactiveTrades={inactiveTrades}
+        range={range}
+      />
+    </div>
+  )
+}

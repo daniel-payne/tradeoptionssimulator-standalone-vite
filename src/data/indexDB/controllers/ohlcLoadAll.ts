@@ -13,6 +13,6 @@ export async function controller(db: PriceSimulatorDexie) {
   return db ? null : db
 }
 
-export default function pricingLoadAll() {
+export default function ohlcLoadAll() {
   return controller(db)
 }

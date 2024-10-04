@@ -5,7 +5,7 @@
 import { OptionDirection } from "../enums/OptionDirection"
 import { OptionExecution } from "../enums/OptionExecution"
 import { TradeDirection } from "../enums/TradeDirection"
-import { Price } from "./Price"
+import { PriceOrNothing } from "./Price"
 import { Rate } from "./Rate"
 import { Volatility } from "./Volatility"
 
@@ -14,7 +14,7 @@ export type Analysis = {
   notional: number | undefined
   duration: number | undefined
 
-  currentPrice?: Price | null | undefined
+  currentPrice?: PriceOrNothing
   currentVolatility?: Volatility | null | undefined
   currentRate?: Rate | null | undefined
 

@@ -1,5 +1,5 @@
-import { Market } from "@/data/indexDB/types/Market"
-import { Price } from "@/data/indexDB/types/Price"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
+import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import capitalizedWord from "@/utilities/capitalizedWord"
 import formatIndexAsDate from "@/utilities/formatIndexAsDate"
 import formatNumber from "@/utilities/formatNumber"
@@ -8,14 +8,14 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import { FaArrowRight, FaArrowTrendDown, FaArrowTrendUp, FaArrowTurnDown, FaArrowTurnUp, FaBuildingLock } from "react-icons/fa6"
 
 type ComponentProps = {
-  market: Market
-  price: Price | null | undefined
-  marketData: any
+  market: MarketOrNothing
+  price: PriceOrNothing
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketPriceDescription({ market, price, marketData, name = "MarketPriceDescription", ...rest }: PropsWithChildren<ComponentProps>) {
-  if (price == null) {
+export default function MarketPriceDescription({ market, price, name = "MarketPriceDescription", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (price == null || market == null) {
     return null
   }
 

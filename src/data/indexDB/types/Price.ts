@@ -42,3 +42,5 @@ export type Price = {
 
   [index: string]: any
 }
+
+export type PriceOrNothing = Price | null | undefined

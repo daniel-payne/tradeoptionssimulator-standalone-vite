@@ -2,6 +2,8 @@ import { useQueryState } from "@keldan-systems/state-mutex"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
+  isDisabled?: boolean
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
@@ -10,7 +12,7 @@ export type Range = "at" | "5y" | "1y" | "3m" | "1m"
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-export default function RangeChooser({ name = "RangeChooser", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function RangeChooser({ isDisabled = false, name = "RangeChooser", ...rest }: PropsWithChildren<ComponentProps>) {
   const [range, setRange] = useQueryState<Range>("range", "1m")
 
   const handleClick = (range: Range) => {
@@ -50,21 +52,21 @@ export default function RangeChooser({ name = "RangeChooser", ...rest }: PropsWi
   return (
     <div {...rest} data-component={name}>
       <div className="flex flex-row gap-2 justify-center items-center">
-        <div className={classNameAT} onClick={handleClickAT}>
+        <button className={classNameAT} onClick={handleClickAT} disabled={isDisabled}>
           1970
-        </div>
-        <div className={className5Y} onClick={handleClick5Y}>
+        </button>
+        <button className={className5Y} onClick={handleClick5Y} disabled={isDisabled}>
           5Y
-        </div>
-        <div className={className1Y} onClick={handleClick1Y}>
+        </button>
+        <button className={className1Y} onClick={handleClick1Y} disabled={isDisabled}>
           1Y
-        </div>
-        <div className={className3M} onClick={handleClick3M}>
+        </button>
+        <button className={className3M} onClick={handleClick3M} disabled={isDisabled}>
           3M
-        </div>
-        <div className={className1M} onClick={handleClick1M}>
+        </button>
+        <button className={className1M} onClick={handleClick1M} disabled={isDisabled}>
           1M
-        </div>
+        </button>
       </div>
     </div>
   )

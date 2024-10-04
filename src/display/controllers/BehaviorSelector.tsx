@@ -1,6 +1,6 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaGears } from "react-icons/fa6"
+import { FaBorderTopLeft, FaGears } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -40,7 +40,7 @@ export default function BehaviorSelector({ name = "BehaviorSelector", ...rest }:
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className="tooltip tooltip-bottom" data-tip={TOOLTIP} onClick={handleClick}>
           <div className={classNameSwitch}>
-            <FaGears />
+            <FaBorderTopLeft className="rotate-90" />
           </div>
         </div>
       </div>

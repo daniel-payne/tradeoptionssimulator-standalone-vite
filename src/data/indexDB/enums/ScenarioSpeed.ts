@@ -1,5 +1,5 @@
 export enum ScenarioSpeed {
-  Slow = 1000,
+  Slow = 2000,
   Medium = 500,
   Fast = 100,
 }

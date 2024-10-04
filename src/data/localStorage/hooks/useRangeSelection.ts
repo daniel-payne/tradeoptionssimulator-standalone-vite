@@ -2,8 +2,8 @@ import { useQueryState } from "@keldan-systems/state-mutex"
 
 import type { Range } from "@/display/controllers/RangeChooser"
 
-export default function useRangeSelection() {
-  const [selection] = useQueryState<Range>("range", "1m")
+export default function useRangeSelection(defaultSelection?: Range) {
+  const [selection] = useQueryState<Range>("range", defaultSelection ?? "1m")
 
   return selection
 }

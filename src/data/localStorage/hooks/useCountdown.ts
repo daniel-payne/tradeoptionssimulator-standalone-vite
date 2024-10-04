@@ -48,16 +48,16 @@ const useCountdown = () => {
         }
       }, 1000)
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCountdownActive, progress])
 
+  useEffect(() => {
+    startCountdown()
+  }, [])
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  return {
-    data: { progress, time, duration, isCountdownActive },
-    actions: { startCountdown, stopCountdown },
-  } as const
+  return { progress, time, duration, isCountdownActive } as const
 }
 
 export default useCountdown

@@ -1,6 +1,6 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaGear } from "react-icons/fa6"
+import { FaBorderTopLeft, FaGear } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -40,7 +40,7 @@ export default function ActionSelector({ name = "ActionSelector", ...rest }: Pro
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className="tooltip tooltip-bottom" data-tip={TOOLTIP} onClick={handleClick}>
           <div className={classNameSwitch}>
-            <FaGear />
+            <FaBorderTopLeft className="rotate-180" />
           </div>
         </div>
       </div>

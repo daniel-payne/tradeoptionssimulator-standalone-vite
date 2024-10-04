@@ -31,6 +31,6 @@ export async function controller(db: PriceSimulatorDexie, value: number, source:
   return newTransaction
 }
 
-export default function addTransaction(value: number, source: TransactionSource, index?: number, description?: string, reference?: string) {
+export default function transactionsAdd(value: number, source: TransactionSource, index?: number, description?: string, reference?: string) {
   return controller(db, value, source, index, description, reference)
 }

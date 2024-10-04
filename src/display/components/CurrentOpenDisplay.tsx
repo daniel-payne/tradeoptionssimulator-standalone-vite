@@ -1,15 +1,21 @@
-import { Price } from "@/data/indexDB/types/Price"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
+import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import formatNumber from "@/utilities/formatNumber"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { Link } from "react-router-dom"
 
 type ComponentProps = {
-  market: Market
-  price?: Price | null | undefined
+  market: MarketOrNothing
+  price?: PriceOrNothing
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function CurrentOpenDisplay({ market, price, name = "CurrentOpenDisplay", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null || price == null) {
+    return
+  }
+
   const displayValue = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
 
   if (displayValue == null) {

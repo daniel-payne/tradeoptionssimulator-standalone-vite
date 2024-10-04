@@ -1,11 +1,11 @@
 import { DEFAULT_SPREAD } from "../constants/DEFAULT_SPREAD"
-import { Market } from "../types/Market"
+import { MarketOrNothing } from "../types/Market"
 import { Price } from "../types/Price"
-import { Timer } from "../types/Timer"
+import { TimerOrNothing } from "../types/Timer"
 
 export default function extractPriceForIndex(
-  timer: Timer | undefined,
-  market: Market | undefined,
+  timer: TimerOrNothing,
+  market: MarketOrNothing,
   opens: Array<number | null | undefined> | null | undefined,
   highs: Array<number | null | undefined> | null | undefined,
   lows: Array<number | null | undefined> | null | undefined,

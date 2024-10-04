@@ -1,4 +1,4 @@
-import { Market } from "@/data/indexDB/types/Market"
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -8,10 +8,10 @@ import MarketSummaryDescription from "./MarketSummaryDescription"
 import ohlcLoadFor from "@/data/indexDB/controllers/ohlcLoadFor"
 import MarketBehaviors from "./MarketBehaviors"
 import { MarketDisplay } from "@/data/indexDB/enums/MarketDisplay"
-import SymbolSparkline from "../controllers/SymbolSparkline"
+import SparklineManager from "@/display/coordinators/ClosesManager"
 
 type ComponentProps = {
-  market: Market
+  market: MarketOrNothing
 
   favorites?: Array<string>
 
@@ -21,6 +21,10 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketDetails({ market, display, favorites, name = "ScenarioOverview", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null) {
+    return
+  }
+
   const isFavorite = favorites?.includes(market.symbol)
   const hasPrices = (market.priceCount ?? 0) > 0
   const hasNoPrices = !hasPrices
@@ -48,7 +52,7 @@ export default function MarketDetails({ market, display, favorites, name = "Scen
               )}
             </>
           )}
-          {display === MarketDisplay.Line && <SymbolSparkline symbol={market?.symbol} />}
+          {display === MarketDisplay.Line && <SparklineManager symbol={market?.symbol} />}
         </div>
       </div>
     </div>

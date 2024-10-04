@@ -111,6 +111,11 @@
   --outcome-profit: rgba(31, 158, 58, 1);
   --outcome-neutral: rgba(2, 153, 204, 1);
 
+  --outcome-loss-75: rgba(244, 85, 85, 0.75);
+  --outcome-partial-75: rgba(219, 212, 43, 0.75);
+  --outcome-profit-75: rgba(31, 158, 58, 0.75);
+  --outcome-neutral-75: rgba(2, 153, 204, 0.75);
+
   --outcome-loss-50: rgba(244, 85, 85, 0.5);
   --outcome-partial-50: rgba(219, 212, 43, 0.5);
   --outcome-profit-50: rgba(31, 158, 58, 0.5);

@@ -37,9 +37,11 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     return
   }
 
-  if (LOADING[symbol] === true) {
-    return
-  }
+  // if (LOADING[symbol] === true) {
+  //   LOADING[symbol] = false
+
+  //   return
+  // }
 
   LOADING[symbol] = true
 
@@ -47,6 +49,10 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   const path = market?.filePath
 
   if (path == null) {
+    return
+  }
+
+  if (market?.firstActiveIndex != null) {
     return
   }
 
