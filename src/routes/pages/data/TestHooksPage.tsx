@@ -35,10 +35,12 @@ import useInactiveTrades from "@/data/indexDB/hooks/useInactiveTrades"
 
 import useActiveSymbols from "@/data/indexDB/hooks/useActiveSymbols"
 import useFavoriteSymbols from "@/data/indexDB/hooks/useFavoriteSymbols"
-import useLatestActiveTradeFor from "@/data/indexDB/hooks/useLatestActiveTradeFor"
-import useLatestInactiveTradeFor from "@/data/indexDB/hooks/useLatestInactiveTradeFor"
 import useInactiveLatestTradeFor from "@/data/indexDB/hooks/useInactiveLatestTradeFor"
 import useActiveLatestTradeFor from "@/data/indexDB/hooks/useActiveLatestTradeFor"
+
+import useVariationMargins from "@/data/indexDB/hooks/useVariationMargins"
+import useVariationMarginsFor from "@/data/indexDB/hooks/useVariationMarginsFor"
+import useVariationMarginFor from "@/data/indexDB/hooks/useVariationMarginFor"
 
 type ComponentProps = {
   name?: string
@@ -75,6 +77,7 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
 
   const [symbol, setSymbol] = useState<string>("^SPX")
   const [code, setCode] = useState<string>("USD")
+  const [id, setId] = useState<string>("")
 
   const activeTrades = useActiveTrades()
   const activeTradesFor = useActiveTradesFor(symbol)
@@ -113,6 +116,10 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
   const favoriteSelection = useFavoriteSelection()
   const rangeSelection = useRangeSelection()
   const viewSelection = useViewSelection()
+
+  const variationMargins = useVariationMargins()
+  const variationMarginsFor = useVariationMarginsFor(symbol)
+  const variationMarginFor = useVariationMarginFor(id)
 
   let data
 
@@ -172,6 +179,12 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
     data = activeSymbols
   } else if (checkIfSelected("favoriteSymbols")) {
     data = favoriteSymbols
+  } else if (checkIfSelected("margins")) {
+    data = variationMargins
+  } else if (checkIfSelected("marginsFor")) {
+    data = variationMarginsFor
+  } else if (checkIfSelected("marginFor")) {
+    data = variationMarginFor
   }
   // Local Storage
   else if (checkIfSelected("actionsSelection")) {
@@ -259,6 +272,19 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
               <SelectHook name="useInactiveTrades" onSelect={setSelection} />
               <SelectHook name="useInactiveTradesFor" symbol={symbol} onSelect={setSelection} />
               <SelectHook name="useInactiveLatestTradeFor" symbol={symbol} onSelect={setSelection} />
+            </div>
+            <div className="divider">Margin</div>
+            <input
+              type="text"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              placeholder="ID"
+              className="ms-2 w-48 input input-sm input-primary input-bordered"
+            />
+            <div className="p-2 flex flex-row flex-wrap gap-4">
+              <SelectHook name="useVariationMargins" onSelect={setSelection} />
+              <SelectHook name="useVariationMarginsFor" symbol={symbol} onSelect={setSelection} />
+              <SelectHook name="useVariationMarginFor" symbol={id} onSelect={setSelection} />
             </div>
             <div className="divider">IndexDB Hooks</div>
             <div className="p-2 flex flex-row flex-wrap gap-4">

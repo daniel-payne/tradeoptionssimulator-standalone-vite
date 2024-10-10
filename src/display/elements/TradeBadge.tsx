@@ -2,6 +2,7 @@
 // import { Trade } from "@/data/indexDB/types/Trade"
 
 import calculateMarginFor from "@/data/indexDB/calculate/calculateMarginFor"
+import useMarginFor from "@/data/indexDB/hooks/useVariationMarginFor"
 import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 import useTradeFor from "@/data/indexDB/hooks/useTradeFor"
@@ -21,7 +22,7 @@ export default function TradeBadge({ id, name = "TradeBadge", ...rest }: PropsWi
   const price = usePriceFor(trade?.symbol)
   const market = useMarketFor(trade?.symbol)
 
-  const margin = calculateMarginFor(trade, market, price)
+  const margin = useMarginFor(id)
 
   const isActive = trade?.profit == null
 
@@ -53,7 +54,7 @@ export default function TradeBadge({ id, name = "TradeBadge", ...rest }: PropsWi
   return (
     <div {...rest} data-component={name}>
       <div className={classNames}>
-        <span className="font-xs fg--subheading">{trade?.symbol}</span>
+        <span className="font-xs fg--subheading">{market?.name}</span>
         &nbsp;
         {displayValue}
       </div>

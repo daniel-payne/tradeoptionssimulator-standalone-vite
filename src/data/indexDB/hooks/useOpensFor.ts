@@ -6,7 +6,7 @@ import consoleInfo from "@/utilities/consoleInfo"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default function useOpensFor(symbol = "MISSING") {
+export default function useOpensFor(symbol: string) {
   const data = useLiveQuery(async () => {
     const cached = db.opensCache[symbol]
 

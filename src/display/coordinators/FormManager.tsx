@@ -1,21 +1,26 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import ContractController from "../controllers/ContractController"
+
+import ContractController from "@/display/controllers/ContractController"
+
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
-import useTradeSelection from "@/data/localStorage/hooks/useTradeSelection"
-
 import useInactiveLatestTradeFor from "@/data/indexDB/hooks/useInactiveLatestTradeFor"
 import useActiveLatestTradeFor from "@/data/indexDB/hooks/useActiveLatestTradeFor"
+
 import calculateMarginFor from "@/data/indexDB/calculate/calculateMarginFor"
+
+import type { Settings } from "@/display/Settings"
 
 type ComponentProps = {
   symbol: string
 
+  settings?: Settings
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function TradingManager({ symbol, name = "TradingManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function FormManager({ symbol, settings = {}, name = "TradingManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const timer = useTimer()
   const market = useMarketFor(symbol)
   const price = usePriceFor(symbol)
@@ -23,17 +28,13 @@ export default function TradingManager({ symbol, name = "TradingManager", ...res
   const currentTrade = useActiveLatestTradeFor(symbol)
   const lastTrade = useInactiveLatestTradeFor(symbol)
 
-  //const margin = useMarginFor(currentTrade?.id)
-
-  const display = useTradeSelection("contract")
-
-  const showMultiples = display === "contract" ? false : true
+  const { trade = "contract" } = settings
 
   const margin = calculateMarginFor(currentTrade, market, price)
 
   return (
     <div {...rest} data-controller={name}>
-      {display === "contract" && (
+      {trade === "contract" && (
         <ContractController
           className="h-full w-full"
           timer={timer}
@@ -42,7 +43,7 @@ export default function TradingManager({ symbol, name = "TradingManager", ...res
           margin={margin}
           currentTrade={currentTrade}
           lastTrade={lastTrade}
-          showMultiples={showMultiples}
+          settings={settings}
         />
       )}
     </div>

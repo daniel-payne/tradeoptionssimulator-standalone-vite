@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage className="h-full w-full" />,
   },
   {
-    path: "/trading/:symbol",
+    path: "/trading/:symbols",
     element: <TradingPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },

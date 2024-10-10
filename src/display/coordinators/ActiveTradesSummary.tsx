@@ -9,7 +9,7 @@ type ComponentProps = {
 export default function ActiveTradesSummary({ name = "ActiveTradesSummary", ...rest }: PropsWithChildren<ComponentProps>) {
   const trades = useActiveTrades()
 
-  if (trades == null || trades.length === 0) {
+  if (trades == null || trades?.length === 0) {
     return <div className="text-sm fg--subheading opacity-25">Active Trades Will be displayed here</div>
   }
 

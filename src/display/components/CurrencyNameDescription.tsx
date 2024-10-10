@@ -8,7 +8,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function CurrencyNameDescription({ currency, name = "MarketNameDescription", ...rest }: PropsWithChildren<ComponentProps>) {
-  const showDescription = currency.description.length > 0 // && market.name.length <= 7
+  const showDescription = currency.description?.length > 0
 
   return (
     <div {...rest} data-component={name}>

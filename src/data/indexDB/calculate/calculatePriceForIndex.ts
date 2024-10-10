@@ -3,7 +3,7 @@ import { MarketOrNothing } from "../types/Market"
 import { Price } from "../types/Price"
 import { TimerOrNothing } from "../types/Timer"
 
-export default function extractPriceForIndex(
+export default function calculatePriceForIndex(
   timer: TimerOrNothing,
   market: MarketOrNothing,
   opens: Array<number | null | undefined> | null | undefined,

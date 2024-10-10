@@ -14,7 +14,7 @@ export async function controller(db: PriceSimulatorDexie, newValues: Partial<Cur
     updatedCurrency = { ...currentCurrency, ...newValues }
   }
 
-  await db.currencies.add(updatedCurrency)
+  await db.currencies.put(updatedCurrency)
 }
 
 export default async function currencyUpdate(newValues: Partial<Currency> = {}) {

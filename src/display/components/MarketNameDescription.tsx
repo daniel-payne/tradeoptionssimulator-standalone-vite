@@ -11,7 +11,7 @@ export default function MarketNameDescription({ market, name = "MarketNameDescri
     return
   }
 
-  const showDescription = market.description.length > 0 // && market.name.length <= 7
+  const showDescription = market.description?.length > 0
 
   return (
     <div {...rest} data-component={name}>

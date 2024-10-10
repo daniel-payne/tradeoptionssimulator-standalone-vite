@@ -28,7 +28,7 @@ export async function controller(db: PriceSimulatorDexie) {
   await db.currencies.clear()
 
   await db.currencies.bulkPut(currencies).catch(Dexie.BulkError, function (e) {
-    console.error("loadCurrencies Loading Error: " + e.failures.length)
+    console.error("loadCurrencies Loading Error: " + e.failures?.length)
   })
 
   return currencies

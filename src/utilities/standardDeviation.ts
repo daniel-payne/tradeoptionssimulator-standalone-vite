@@ -1,5 +1,5 @@
 export default function standardDeviation(array: number[]) {
-  if (array.length < 2) {
+  if (array == null || array.length < 2) {
     return undefined
   }
 

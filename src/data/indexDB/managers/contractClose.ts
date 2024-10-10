@@ -56,6 +56,8 @@ export async function controller(db: PriceSimulatorDexie, timer: TimerOrNothing,
 
           newContract.profit = newContract.direction === "CALL" ? dollarDifference : dollarDifference * -1
 
+          newContract.exitValue = newContract.entryValue + dollarDifference
+
           await db.trades?.put(newContract)
 
           await db.transactions?.add({

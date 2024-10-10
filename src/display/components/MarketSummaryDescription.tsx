@@ -1,4 +1,4 @@
-import { MarketOrNothing } from "@/data/indexDB/types/Market"
+import { Market, MarketOrNothing } from "@/data/indexDB/types/Market"
 import formatIndexAsDate from "@/utilities/formatIndexAsDate"
 import formatIndexAsDay from "@/utilities/formatIndexAsDay"
 

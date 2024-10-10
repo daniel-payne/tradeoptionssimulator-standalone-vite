@@ -37,6 +37,29 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     return
   }
 
+  const cachedOpens = db.opensCache[symbol]
+  const cachedHighs = db.highsCache[symbol]
+  const cachedLows = db.lowsCache[symbol]
+  const cachedCloses = db.closesCache[symbol]
+
+  if (cachedOpens != null && cachedHighs != null && cachedLows != null && cachedCloses != null) {
+    return
+  }
+
+  const storedOpens = await db.opens.get(symbol)
+  const storedHighs = await db.highs.get(symbol)
+  const storedLows = await db.lows.get(symbol)
+  const storedCloses = await db.closes.get(symbol)
+
+  if (storedOpens != null && storedHighs != null && storedLows != null && storedCloses != null) {
+    db.opensCache[symbol] = storedOpens.data
+    db.highsCache[symbol] = storedHighs.data
+    db.lowsCache[symbol] = storedLows.data
+    db.closesCache[symbol] = storedCloses.data
+
+    return
+  }
+
   // if (LOADING[symbol] === true) {
   //   LOADING[symbol] = false
 
@@ -99,7 +122,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   let dataStarted = false
   let priceCount = 0
 
-  for (let i = closes.data.length - 1; i >= 0; i--) {
+  for (let i = closes.data?.length - 1; i >= 0; i--) {
     if (timeGapFound === false) {
       const open = opens.data[i]
       const close = closes.data[i]

@@ -3,7 +3,7 @@ import { PriceOrNothing } from "../types/Price"
 import { TradeOrNothing } from "../types/Trade"
 
 export default function calculateMarginFor(trade: TradeOrNothing, market: MarketOrNothing, price: PriceOrNothing) {
-  const { amount, direction, entryPrice, entryValue, expiryIndex } = trade ?? {}
+  const { id, amount, direction, entryPrice, entryValue, expiryIndex } = trade ?? {}
 
   let priceModifier = market?.priceModifier ?? 1
   let priceSize = market?.priceSize ?? 1
@@ -19,18 +19,38 @@ export default function calculateMarginFor(trade: TradeOrNothing, market: Market
   if (price != null && entryPrice != null && entryValue != null && expiryIndex != null) {
     const currentPrice = direction === "CALL" ? price.priorClosingAsk : price.priorClosingBid
 
-    const currentDifference = direction === "CALL" ? currentPrice - entryPrice : entryPrice - currentPrice
+    const currentDifference = currentPrice - entryPrice
 
     const currentPercent = currentDifference / entryPrice
 
-    const currentValue = ((currentPrice * priceModifier) / priceSize) * (amount ?? 0)
+    const currentModifier = direction === "CALL" ? 1 : -1
 
-    const currentProfit = direction === "CALL" ? currentValue - entryValue : entryValue - currentValue
+    const currentProfit = (amount ?? 0) * currentModifier * currentPercent
+
+    const currentValue = entryValue + currentProfit
+
+    // const currentValue = ((currentPrice * priceModifier) / priceSize) * (amount ?? 0)
+
+    // const currentDifference = currentValue - entryValue
+
+    // const currentPercent = currentDifference / entryValue
+
+    // const currentProfit = direction === "CALL" ? currentValue - entryValue : entryValue - currentValue
+
+    // const entryValues = (entryPrice / priceModifier) * priceSize * (amount ?? 0)
 
     return {
+      id,
+      amount,
+      priceModifier,
+      priceSize,
+      entryPrice,
+      entryValue,
+
       currentPrice,
       currentDifference,
       currentPercent,
+      currentModifier,
       currentValue,
       currentProfit,
     }

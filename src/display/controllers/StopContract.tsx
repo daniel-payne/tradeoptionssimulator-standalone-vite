@@ -2,17 +2,16 @@ import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import { TradeOrNothing } from "@/data/indexDB/types/Trade"
 import { type HTMLAttributes, type PropsWithChildren } from "react"
-
-type ComponentSettings = {
-  showMultiples?: boolean | null | undefined
-}
+import ContractSizePicker from "./ContractSizePicker"
+import { Settings } from "../Settings"
+import TradeDirectionPicker from "./TradeDirectionPicker"
 
 type ComponentProps = {
   market?: MarketOrNothing
   price?: PriceOrNothing
   trade?: TradeOrNothing
 
-  settings?: ComponentSettings
+  settings?: Settings
 
   onOrder?: () => void
 
@@ -50,6 +49,8 @@ export default function StopContract({ market, price, trade, settings, onOrder, 
     contractSuffix = "s"
   }
 
+  const tradeDirection = trade.direction === "CALL" ? "PUT" : "CALL"
+
   const handlePlaceOrder = () => {
     if (onOrder) {
       onOrder()
@@ -62,20 +63,13 @@ export default function StopContract({ market, price, trade, settings, onOrder, 
         <div className="divider">I would like to close a position</div>
         <div className="flex flex-col justify-start items-center p-2 gap-4">
           <div className="flex flex-row gap-2 justify-center items-center">
-            <div>For</div>
-            {showMultiples && <button className={displayClassesSizeQuarter}>Quarter</button>}
-            {showMultiples && <button className={displayClassesSizeHalf}>Half</button>}
-            <button className={displayClassesSizeOne}>One</button>
-            {showMultiples && <button className={displayClassesSizeTwo}>Two</button>}
-            <div>
-              <span>{contractPrefix}</span> Contract<span>{contractSuffix}</span>
-            </div>
+            <div>By opening</div>
           </div>
 
           <div className="flex flex-row gap-2 justify-center items-center">
-            <div>By</div>
-            <button className={classNamesBuy}>{displayCallLabel}</button>
-            <button className={classNamesSell}>{displayPutLabel}</button>
+            <ContractSizePicker size={trade.size} settings={settings} />
+            <div>to</div>
+            <TradeDirectionPicker direction={tradeDirection} settings={settings} />
             <div>{market?.name}</div>
           </div>
 

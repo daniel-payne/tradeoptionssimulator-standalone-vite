@@ -1,5 +1,5 @@
 export default function average(array: number[]) {
-  if (array.length === 0) {
+  if (array == null || array.length === 0) {
     return undefined
   }
 

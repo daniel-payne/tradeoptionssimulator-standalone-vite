@@ -6,20 +6,21 @@ import useBehaviorsSelection from "@/data/localStorage/hooks/useBehaviorsSelecti
 import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
 
 import type { Behavior } from "../controllers/BehaviorSelector"
+import { Settings } from "../Settings"
 
 type ComponentProps = {
   market: MarketOrNothing
 
-  defaultBehaviors?: Behavior
+  settings?: Settings
+  favoriteSymbols?: Array<string>
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketHeader({ market, defaultBehaviors, name = "MarketHeader", ...rest }: PropsWithChildren<ComponentProps>) {
-  const behaviors = useBehaviorsSelection(defaultBehaviors ?? "on")
-  const favorites = useFavoriteList()
+export default function MarketHeader({ market, settings = {}, favoriteSymbols = [], name = "MarketHeader", ...rest }: PropsWithChildren<ComponentProps>) {
+  const { behaviors = "off" } = settings
 
-  const isFavorite = favorites?.includes(market?.symbol ?? "MISSING")
+  const isFavorite = favoriteSymbols?.includes(market?.symbol ?? "MISSING")
 
   return (
     <div {...rest} data-controller={name}>

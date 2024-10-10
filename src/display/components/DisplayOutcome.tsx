@@ -27,18 +27,14 @@ export default function DisplayOutcome({ market, trade, margin, onStartAgain, na
     return <div>Outcome not found </div>
   }
 
-  // const isOpen = trade.status === TradeStatus.OPEN
   const isClosed = trade.status === TradeStatus.Closed
 
   const profit = isClosed ? trade.profit : margin?.currentProfit ?? 0
-  const movement = isClosed ? trade.exitPrice - trade.entryPrice : margin?.currentPrice - trade.entryPrice
-  const percent = (movement / trade.entryPrice) * 100
-
-  const displayMovement = formatNumber(movement)
-  const classNameMovement = movement > 0 ? "text-xl text-profit" : "text-xl text-loss"
 
   const displayProfit = formatValue(profit)
-  const classNameProfit = profit > 0 ? "w-24 text-center rounded-lg p-2 bg-profit" : "w-24 text-center rounded-lg p-2 bg-loss"
+
+  let classNameProfit = "w-24 text-center rounded-lg p-2"
+  classNameProfit += profit > 0 ? " bg-profit " : " bg-loss"
 
   const handleStartAgain = () => {
     if (onStartAgain) {
@@ -49,48 +45,19 @@ export default function DisplayOutcome({ market, trade, margin, onStartAgain, na
   return (
     <div {...rest} data-component={name}>
       <div className="p-2">
-        <div className="divider">My last trade was for</div>
+        <div className="divider">My last trade was</div>
         <div className="flex flex-col justify-start items-center p-2 gap-4">
-          {/* 1 */}
-          <div className="flex flex-row gap-2 justify-center items-baseline">
-            <div>{trade?.size} contract</div>
-          </div>
-          {/* 2 */}
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <div className="text-xs fg--subheading">
-              {market?.contractName} for delivery on {formatIndexAsDate(trade?.expiryIndex)}
-            </div>
-          </div>
-          {/* 3 */}
           <div className="flex flex-row gap-2 justify-center items-center">
             <div className="flex flex-row gap-2 justify-center items-center">
               <div>{trade?.direction}</div>
+              <div>{formatValue(trade?.entryValue, false, "USD")}</div>
               <div className="text-xs fg--subheading">{trade?.direction === "CALL" ? <FaArrowTrendUp /> : <FaArrowTrendDown />}</div>
+              <div>{formatValue(trade?.exitValue, false, "USD")}</div>
+              <div className={classNameProfit}>{displayProfit}</div>
             </div>
-            <div>{formatValue(trade?.amount, false, "USD")}</div>
-          </div>
-          {/* 4 */}
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <div className="text-xs fg--subheading">{trade?.direction === "CALL" ? "buy now - sell later" : "sell now - buy later"}</div>
-          </div>
-          {/* 5 */}
-          <div className="flex flex-row gap-2 justify-center items-baseline">
-            <div>{trade?.entryPrice}</div>
-            <div className={classNameMovement}>{displayMovement}</div>
-            <div>{trade?.exitPrice}</div>
-          </div>
-          {/* 6 */}
-          <div className="flex flex-row gap-2 justify-center items-baseline">
-            <div className={classNameMovement}>
-              <div className="text-xs">{formatNumber(percent, 4)}% </div>
-            </div>
-          </div>
-          {/* 7 */}
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <div className={classNameProfit}>{displayProfit}</div>
           </div>
         </div>
-        <div className="divider" />
+        <div className="h-4">&nbsp;</div>
         <div className="flex flex-row gap-2 justify-center items-baseline">
           <button className="btn  btn-primary rounded-3xl " onClick={handleStartAgain}>
             Continue Trading

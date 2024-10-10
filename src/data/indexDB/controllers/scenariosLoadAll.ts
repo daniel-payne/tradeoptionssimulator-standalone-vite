@@ -28,7 +28,7 @@ export async function controller(db: PriceSimulatorDexie) {
   await db.scenarios.clear()
 
   await db.scenarios.bulkPut(scenarios).catch(Dexie.BulkError, function (e) {
-    console.error("loadScenarios Loading Error: " + e.failures.length)
+    console.error("loadScenarios Loading Error: " + e.failures?.length)
   })
 
   // db.scenariosCache = scenarios

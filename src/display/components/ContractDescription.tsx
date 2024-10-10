@@ -47,7 +47,7 @@ export default function ContractDescription({ market, price, timer, settings, na
   const bidContract = bidValue * (market?.contractSize ?? 1)
   const askContract = askValue * (market?.contractSize ?? 1)
 
-  // const midPoints = (midPrice ?? 0) * (contractPoints ?? 1)
+  const midPoints = (midPrice ?? 0) * (contractPoints ?? 1)
   const bidPoints = (bidPrice ?? 0) * (contractPoints ?? 1)
   const askPoints = (askPrice ?? 0) * (contractPoints ?? 1)
 
@@ -57,7 +57,7 @@ export default function ContractDescription({ market, price, timer, settings, na
   const displayBidValue = formatValue(bidValue, true, "USD", decimalPlaces)
   const displayAskValue = formatValue(askValue, true, "USD", decimalPlaces)
 
-  // const displayMidPoints = formatValue(midPoints, false, "USD", 2)
+  const displayMidPoints = formatValue(midPoints, false, "USD", 2)
   const displayBidPoints = formatValue(bidPoints, false, "USD", 2)
   const displayAskPoints = formatValue(askPoints, false, "USD", 2)
 
@@ -80,43 +80,45 @@ export default function ContractDescription({ market, price, timer, settings, na
 
   return (
     <div {...rest} data-controller={name}>
-      <div className="p-2">
+      <div className="h-full w-full p-2">
         <div className="text-sm fg--heading">For a contract of {market?.name}, i.e.</div>
         <div className="text-sm fg--subheading">
           <span>{market?.contractName} to be delivered on</span>
           <br />
           <span className="ps-4">
-            {displayEndDay}, <strong>{displayEndDate}</strong>
+            <strong>{displayEndDate}</strong>
           </span>
         </div>
         {showMultiples && (
           <>
             <div className="text-sm fg--subheading">
               <span>
-                At {displayPricePoint}{" "}
+                Currently
                 <strong>
-                  {market?.contractSize} {market?.contractUnit}&nbsp;
+                  &nbsp;{market?.contractSize} {market?.contractUnit}&nbsp;
                 </strong>
-                was trading for you
+                is trading for you
               </span>
               <br />
               <span className="ps-4">
-                to sell at <strong>{displayAskValue}</strong>
+                and buy at
+                <strong>&nbsp;{displayAskValue}&nbsp;</strong> per {market.contractUnit}
               </span>
               <br />
               <span className="ps-4">
-                and buy at <strong>{displayBidValue}</strong>
+                to sell at <strong>{displayBidValue} </strong> per {market.contractUnit}
               </span>
             </div>
             <div className="text-sm fg--subheading">
               <span>A contract was trading for you</span>
               <br />
+
               <span className="ps-4">
-                to sell at <strong>{displayAskContract}</strong>
+                and to buy at <strong>{displayAskContract}</strong>
               </span>
               <br />
               <span className="ps-4">
-                and to buy at <strong>{displayBidContract}</strong>
+                to sell at <strong>{displayBidContract}</strong>
               </span>
             </div>
             <div className="text-sm fg--subheading">
@@ -124,27 +126,20 @@ export default function ContractDescription({ market, price, timer, settings, na
             </div>
           </>
         )}
-        {!showMultiples && displayContractPoints == null && (
+
+        {!showMultiples && (
           <>
+            {displayContractPoints != null && (
+              <div className="text-sm fg--subheading">
+                <span>The Profit &amp; Loss is about </span>
+                <br />
+                <strong className="ps-4">{displayContractPoints}</strong> per index point
+              </div>
+            )}
             <div className="text-sm fg--subheading">
-              At {displayPricePoint} {market?.name} was <strong>{displayMidValue}</strong> per point
-            </div>
-            <div className="text-sm fg--subheading">
-              A contract was trading at {displayPricePoint} for <strong>{displayMidContract}</strong>
-            </div>
-            <div className="text-sm fg--subheading">
-              The broker will charge <strong>{brokerCharge}</strong> for this transaction
-            </div>
-          </>
-        )}
-        {!showMultiples && displayContractPoints != null && (
-          <>
-            <div className="text-sm fg--subheading">
-              The Profit &amp; Loss is about {displayContractPoints} per index point
-              {/* At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was <strong>{displayMidValue}</strong> per {market?.contractUnit} */}
-            </div>
-            <div className="text-sm fg--subheading">
-              A contract was trading for you to sell at <strong>{displayAskPoints}</strong> and to buy at <strong>{displayBidPoints}</strong>
+              <span>At {displayPricePoint} contract was trading for you at</span>
+              <br />
+              <strong className="ps-4">{displayMidPoints}</strong>
             </div>
             <div className="text-sm fg--subheading">
               The broker will charge <strong>{brokerCharge}</strong> for this transaction

@@ -26,18 +26,16 @@ export async function controller(db: PriceSimulatorDexie, newValues: Partial<Tim
 
   if (currentTimer == null) {
     updatedTimer = { ...defaultTimer, ...newValues, guid }
-
-    await db.timer.add(updatedTimer)
   } else if (currentTimer.guid === guid) {
     updatedTimer = { ...currentTimer, ...newValues }
-
-    await db.timer.put(updatedTimer)
   } else {
     updatedTimer = { ...currentTimer, ...newValues, guid }
+  }
 
+  await db.transaction("rw", ["timer"], async () => {
     await db.timer.clear()
     await db.timer.add(updatedTimer)
-  }
+  })
 }
 
 export default async function timerUpdate(newValues: Partial<Timer> = {}) {

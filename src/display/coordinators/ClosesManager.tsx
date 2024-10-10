@@ -4,17 +4,21 @@ import DataSparklineDisplay from "../elements/ClosesDisplay"
 import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
 import ClosesDisplay from "../elements/ClosesDisplay"
+import { Settings } from "../Settings"
 
 type ComponentProps = {
   symbol: string
+
+  settings?: Settings
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ClosesManager({ symbol, name = "ClosesManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ClosesManager({ symbol, settings = {}, name = "ClosesManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const data = useClosesFor(symbol)
   const price = usePriceFor(symbol)
 
-  const range = useRangeSelection()
+  const { range = "1m" } = settings
 
   if (data == null) {
     return (

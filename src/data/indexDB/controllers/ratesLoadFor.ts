@@ -30,16 +30,24 @@ export async function controller(db: PriceSimulatorDexie, code: string | undefin
     return
   }
 
-  const currency = await db.currencies.get(code)
-  const path = currency?.filePath
-
-  if (path == null) {
+  if (db.ratesCache != null && db.ratesCache[code] != null && db.ratesCache[code].length > 0) {
     return
   }
 
   const count = await db.rates.where({ code }).count()
 
   if (count > 0) {
+    const savedRates = await db.rates.where({ code }).first()
+
+    db.ratesCache[code] = savedRates?.data
+
+    return
+  }
+
+  const currency = await db.currencies.get(code)
+  const path = currency?.filePath
+
+  if (path == null) {
     return
   }
 
@@ -77,7 +85,7 @@ export async function controller(db: PriceSimulatorDexie, code: string | undefin
   let dataStarted = false
   let rateCount = 0
 
-  for (let i = interestRates.data.length - 1; i >= 0; i--) {
+  for (let i = interestRates.data?.length - 1; i >= 0; i--) {
     if (timeGapFound === false) {
       const rate = interestRates.data[i]
 

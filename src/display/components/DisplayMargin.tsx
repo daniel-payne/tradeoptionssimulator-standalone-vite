@@ -7,10 +7,10 @@ import { TradeOrNothing } from "@/data/indexDB/types/Trade"
 import formatNumber from "@/utilities/formatNumber"
 import formatValue from "@/utilities/formatValue"
 import { type HTMLAttributes, type PropsWithChildren } from "react"
-
-type ComponentSettings = {
-  showMultiples?: boolean | null | undefined
-}
+import ContractSizePicker from "../controllers/ContractSizePicker"
+import { Settings } from "../Settings"
+import TradeDirectionPicker from "../controllers/TradeDirectionPicker"
+import TradePositionDisplay from "./TradePositionDisplay"
 
 type ComponentProps = {
   market?: MarketOrNothing
@@ -19,17 +19,28 @@ type ComponentProps = {
   margin?: Margin | null | undefined
   timer?: TimerOrNothing
 
-  settings?: ComponentSettings
+  settings?: Settings
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function DisplayMargin({ market, trade, margin, price, timer, settings, name = "DisplayMargin", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function DisplayMargin({
+  market,
+  trade,
+  margin,
+  price,
+  timer,
+  settings = {},
+  name = "DisplayMargin",
+  ...rest
+}: PropsWithChildren<ComponentProps>) {
   if (trade == null || market == null) {
     return null
   }
 
-  const { showMultiples = false } = settings || {}
+  const tradeDirection = trade.direction === "CALL" ? "PUT" : "CALL"
+
+  const { showMultiples = false } = settings
 
   const displayCallLabel = showMultiples ? "Call" : "Buy"
   const displayPutLabel = showMultiples ? "Put" : "Sell"
@@ -61,7 +72,7 @@ export default function DisplayMargin({ market, trade, margin, price, timer, set
   }
 
   let classNamePrice = "0"
-  let classNameOutcome = "rounded-lg p-2 bg-bg-neutral"
+  let classNameOutcome = "text-sm rounded-lg p-2 bg-bg-neutral"
 
   let displayCurrentPrice
   let displayCurrentProfit = "0"
@@ -69,7 +80,7 @@ export default function DisplayMargin({ market, trade, margin, price, timer, set
 
   if (margin?.currentProfit != null && margin?.currentProfit != 0) {
     classNamePrice = margin.currentProfit > 0 ? "text-profit" : "text-loss"
-    classNameOutcome = margin.currentProfit > 0 ? "rounded-lg p-2 bg-profit" : "rounded-lg p-2 bg-loss"
+    classNameOutcome = margin.currentProfit > 0 ? "text-sm rounded-lg p-2 bg-profit" : "text-sm rounded-lg p-2 bg-loss"
   }
 
   if (price?.isMarketClosed) {
@@ -93,35 +104,16 @@ export default function DisplayMargin({ market, trade, margin, price, timer, set
         <div className="divider">I currently own</div>
         <div className="flex flex-col justify-start items-center p-2 gap-4">
           <div className="flex flex-row gap-2 justify-center items-center">
-            {showMultiples && <button className={displayClassesSizeQuarter}>Quarter</button>}
-            {showMultiples && <button className={displayClassesSizeHalf}>Half</button>}
-            <button className={displayClassesSizeOne}>One</button>
-            {showMultiples && <button className={displayClassesSizeTwo}>Two</button>}
-            <div>
-              <span>{contractPrefix}</span> Contract<span>{contractSuffix}</span>
-            </div>
+            <ContractSizePicker size={trade.size} settings={settings} />
+            <div>To</div>
+            <TradeDirectionPicker direction={tradeDirection} settings={settings} />
+            <div>{market?.name}</div>
           </div>
 
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <div>To</div>
-            <button className={classNamesBuy}>{displayCallLabel}</button>
-            <button className={classNamesSell}>{displayPutLabel}</button>
-            <div>{market?.name}</div>
-            <div className="fg--subheading">@</div>
-            <div className={classNamePrice}>{formatNumber(trade.entryPrice)}</div>
-            <div className="fg--subheading text-xs">{displayCurrentPrice}</div>
-          </div>
+          <TradePositionDisplay margin={margin} settings={settings} />
 
           <div className="flex flex-row gap-2 justify-center items-center">
             <div className={classNamesDaysLeft}>Due for delivery in {daysLeft} days</div>
-          </div>
-
-          {/* <button className="btn  btn-primary rounded-3xl " onClick={handlePlaceOrder}>
-            Place the order
-          </button> */}
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <div className="fg--subheading">{displayCurrentProfitPrefix}</div>
-            <div className={classNameOutcome}>{displayCurrentProfit}</div>
           </div>
         </div>
       </div>

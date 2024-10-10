@@ -30,6 +30,7 @@ import useHeightSelection from "@/data/localStorage/hooks/useHeightSelection"
 import useWidthSelection from "@/data/localStorage/hooks/useWidthSelection"
 import useTradeSelection from "@/data/localStorage/hooks/useTradeSelection"
 import InfoSelector from "@/display/controllers/InfoSelector"
+import { Settings } from "@/display/Settings"
 
 type ComponentProps = {
   name?: string
@@ -55,6 +56,14 @@ export default function TestLayoutPage({ name = "TestLayoutPage", ...rest }: Pro
   const displayList = favorite === "on" ? favoriteList : symbols
 
   const displayClassName = `h-${height} w-${width} p-2`
+
+  const settings = {
+    favorite,
+    view,
+    content,
+    range,
+    trade,
+  } as Settings
 
   return (
     <div {...rest} data-component={name}>
@@ -108,7 +117,7 @@ export default function TestLayoutPage({ name = "TestLayoutPage", ...rest }: Pro
         <div className="flex-auto min-h-0 flex flex-row flex-wrap">
           {displayList?.map((symbol) => (
             <div className={displayClassName} key={symbol}>
-              <SymbolManager className="h-full w-full" symbol={symbol} />
+              <SymbolManager className="h-full w-full" symbol={symbol} settings={settings} />
             </div>
           ))}
         </div>

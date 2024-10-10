@@ -1,3 +1,3 @@
 export default function capitalizedWord(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1)
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
 }

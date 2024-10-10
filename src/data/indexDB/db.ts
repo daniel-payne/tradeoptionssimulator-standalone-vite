@@ -47,7 +47,7 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(1).stores({
+    this.version(2).stores({
       timer: "guid",
 
       scenarios: "ref",
@@ -61,7 +61,7 @@ export class PriceSimulatorDexie extends Dexie {
       currencies: "code",
       rates: "code",
 
-      trades: "id, symbol, status, [symbol+status]",
+      trades: "id, symbol, status, [id+status], [symbol+status]",
       transactions: "id, timestamp",
     })
 

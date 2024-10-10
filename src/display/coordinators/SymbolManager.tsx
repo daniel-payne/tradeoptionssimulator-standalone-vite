@@ -9,7 +9,7 @@ import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 
 import MarketHeader from "../components/MarketHeader"
 import MarketFooter from "../components/MarketFooter"
-import TradingManager from "./TradingManager"
+import FormManager from "./FormManager"
 
 import MarketPriceDescription from "../components/MarketPriceDescription"
 
@@ -23,14 +23,13 @@ import { View } from "../controllers/ViewChooser"
 import { Content } from "../controllers/ContentChooser"
 import { Behavior } from "../controllers/BehaviorSelector"
 import { Action } from "../controllers/ActionSelector"
+import { Settings } from "../Settings"
 
 type ComponentProps = {
   symbol: string
 
-  defaultView?: View
-  defaultContent?: Content
-  defaultBehaviors?: Behavior
-  defaultActions?: Action
+  settings?: Settings
+  favoriteSymbols?: Array<string>
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
@@ -38,10 +37,8 @@ type ComponentProps = {
 export default function SymbolManager({
   symbol,
 
-  defaultView,
-  defaultContent,
-  defaultBehaviors,
-  defaultActions,
+  settings = {},
+  favoriteSymbols = [],
 
   name = "SymbolManager",
   ...rest
@@ -49,8 +46,7 @@ export default function SymbolManager({
   const market = useMarketFor(symbol)
   const price = usePriceFor(symbol)
 
-  const view = useViewSelection(defaultView ?? "expanded")
-  const content = useContentSelection(defaultContent ?? "both")
+  const { view = "contracted", content = "info" } = settings
 
   if (market == null || price == null) {
     return null
@@ -60,7 +56,7 @@ export default function SymbolManager({
     <div {...rest} data-component={name}>
       <div className="h-full w-full rounded-xl p-4 bg-base-300 shadow-xl ">
         <div className="h-full w-full flex flex-col gap-2 ">
-          <MarketHeader market={market} defaultBehaviors={defaultBehaviors} />
+          <MarketHeader market={market} settings={settings} favoriteSymbols={favoriteSymbols} />
           <div className="flex-auto overflow-auto">
             {view === "expanded" && (
               <div className="h-full w-full relative">
@@ -71,23 +67,23 @@ export default function SymbolManager({
                   </>
                 )}
                 {content === "price" && <MarketPriceDescription market={market} price={price} />}
-                {content === "sparkline" && <ClosesManager className="h-full w-full" symbol={symbol} />}
-                {content === "chart" && <HighLowManager className="h-full w-full" symbol={symbol} />}
-                {content === "form" && <TradingManager className="h-full w-full " symbol={symbol} />}
+                {content === "sparkline" && <ClosesManager className="h-full w-full" symbol={symbol} settings={settings} />}
+                {content === "chart" && <HighLowManager className="h-full w-full" symbol={symbol} settings={settings} />}
+                {content === "form" && <FormManager className="h-full w-full " symbol={symbol} settings={settings} />}
                 {content === "both" && (
                   <div className="h-full w-full flex flex-row gap-2">
                     <div className="flex-auto">
-                      <HighLowManager className="h-full w-full" symbol={symbol} />
+                      <HighLowManager className="h-full w-full" symbol={symbol} settings={settings} />
                     </div>
-                    <div className="w-96 border border-primary rounded-lg overflow-auto">
-                      <TradingManager className="h-full w-full " symbol={symbol} />
+                    <div className="h-full w-128 border border-primary rounded-lg overflow-auto">
+                      <FormManager className="h-full w-full" symbol={symbol} settings={settings} />
                     </div>
                   </div>
                 )}
               </div>
             )}
           </div>
-          <MarketFooter market={market} price={price} defaultActions={defaultActions} />
+          <MarketFooter market={market} price={price} settings={settings} />
         </div>
       </div>
     </div>

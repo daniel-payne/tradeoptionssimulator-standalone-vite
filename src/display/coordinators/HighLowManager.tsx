@@ -8,13 +8,17 @@ import useLowsFor from "@/data/indexDB/hooks/useLowsFor"
 import HighLowsDisplay from "../elements/HighLowsDisplay"
 import useActiveTradesFor from "@/data/indexDB/hooks/useActiveTradesFor"
 import useInactiveTradesFor from "@/data/indexDB/hooks/useInactiveTradesFor"
+import { Settings } from "../Settings"
 
 type ComponentProps = {
   symbol: string
+
+  settings?: Settings
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function HighLowManager({ symbol, name = "HighLowManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function HighLowManager({ symbol, settings = {}, name = "HighLowManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const highs = useHighsFor(symbol)
   const lows = useLowsFor(symbol)
   const closes = useClosesFor(symbol)
@@ -24,7 +28,7 @@ export default function HighLowManager({ symbol, name = "HighLowManager", ...res
   const activeTrades = useActiveTradesFor(symbol)
   const inactiveTrades = useInactiveTradesFor(symbol)
 
-  const range = useRangeSelection()
+  const { range = "1m" } = settings
 
   if (price == null) {
     return (

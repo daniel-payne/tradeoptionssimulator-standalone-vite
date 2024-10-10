@@ -12,10 +12,13 @@ export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed)
   if (db.timeout != null) {
     window.clearTimeout(db.timeout)
   }
+
+  const guid = db.guid
+
   if (speed != null) {
-    await timerUpdate({ speed, isTimerActive: true })
+    await timerUpdate({ guid, speed, isTimerActive: true })
   } else {
-    await timerUpdate({ isTimerActive: true })
+    await timerUpdate({ guid, isTimerActive: true })
   }
 
   timerNextDay()

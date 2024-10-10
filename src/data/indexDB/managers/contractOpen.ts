@@ -16,20 +16,37 @@ import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import { PriceOrNothing } from "@/data/indexDB/types/Price"
 
 import { controller as closeContract } from "./contractClose"
+import priceCalculateFor from "../controllers/priceCalculateFor"
 
 export async function controller(
   db: PriceSimulatorDexie,
-  timer: TimerOrNothing,
-  market: MarketOrNothing,
-  price: PriceOrNothing,
-  direction: TradeDirection,
-  size: number
+  // timer: TimerOrNothing,
+  // market: MarketOrNothing,
+  // price: PriceOrNothing,
+
+  symbol: string,
+  size: string | number,
+  direction: TradeDirection
 ) {
+  const timer = await db.timer?.toCollection().first()
+  const market = await db.markets.where({ symbol }).first()
+  const price = await priceCalculateFor(symbol)
+
   if (timer == null || market == null || price == null) {
     return
   }
 
-  const symbol = market?.symbol
+  const checkSize = size.toLocaleString().toUpperCase()
+
+  if (checkSize === "QUARTER") {
+    size = 0.5
+  } else if (checkSize === "HALF") {
+    size = 0.5
+  } else if (checkSize === "ONE") {
+    size = 1
+  } else if (checkSize === "TWO") {
+    size = 2
+  }
 
   const count = await db.trades?.count()
   const activeTrades = await db.trades?.where({ symbol, status: TradeStatus.Open }).toArray()
@@ -72,9 +89,9 @@ export async function controller(
   }
 
   if (market != null && entryIndex != null && entryPrice != null) {
-    const amount = size * market?.contractSize
+    const contractAmount = size * market?.contractSize
 
-    const entryValue = ((entryPrice * priceModifier) / priceSize) * amount
+    const entryValue = ((entryPrice * priceModifier) / priceSize) * contractAmount
 
     if (price != null) {
       const newContract = {
@@ -82,8 +99,8 @@ export async function controller(
         no: count + 1,
         status: TradeStatus.Open,
         symbol,
-        amount,
         direction,
+        amount: entryValue,
         size,
         entryValue,
         entryPrice,
@@ -106,6 +123,13 @@ export async function controller(
   return undefined
 }
 
-export default function openContract(timer: TimerOrNothing, market: MarketOrNothing, price: PriceOrNothing, direction: TradeDirection, size: number) {
-  return controller(db, timer, market, price, direction, size)
+export default function openContract(
+  // timer: TimerOrNothing,
+  // market: MarketOrNothing,
+  // price: PriceOrNothing,
+  symbol: string,
+  size: string | number,
+  direction: TradeDirection
+) {
+  return controller(db, symbol, size, direction)
 }

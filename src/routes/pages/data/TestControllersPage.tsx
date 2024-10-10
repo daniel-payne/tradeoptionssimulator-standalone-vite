@@ -40,7 +40,7 @@ import favoritesRemove from "@/data/localStorage/controllers/favoritesRemove"
 import favoritesToggle from "@/data/localStorage/controllers/favoritesToggle"
 
 const SelectController = ({ name, disabled, type, onRun }: PropsWithChildren<any>): JSX.Element => {
-  let displayClasses = "w-64 btn btn-sm"
+  let displayClasses = "w-48 btn btn-sm"
 
   if (type == null || type === "primary") {
     displayClasses += " btn-primary"
@@ -109,46 +109,56 @@ export default function TestControllersPage({ name = "TestControllersPage", ...r
           </div>
         </div>
 
-        <div className="divider">IndexDB Controllers</div>
+        <div className="divider">Delete</div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="clearUserData" type="warning" onRun={() => clearUserData()} />
-          <SelectController name="clearAllData" type="error" onRun={() => clearAllData()} />
-          <SelectController name="applicationLoad" type="success" onRun={() => applicationLoad()} />
+          <SelectController name="clear User Data" type="warning" onRun={() => clearUserData()} />
+          <SelectController name="clear All Data" type="error" onRun={() => clearAllData()} />
+        </div>
+        <div className="divider">Load</div>
+        <div className="p-2 flex flex-row flex-wrap gap-4">
+          <SelectController name="application Load" type="success" onRun={() => applicationLoad()} />
         </div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="currenciesLoadAll" type="primary" onRun={() => currenciesLoadAll()} />
-          <SelectController name="marketsLoadAll" type="primary" onRun={() => marketsLoadAll()} />
-          <SelectController name="scenariosLoadAll" type="primary" onRun={() => scenariosLoadAll()} />
+          <SelectController name="currencies Load All" type="primary" onRun={() => currenciesLoadAll()} />
+          <SelectController name="markets Load All" type="primary" onRun={() => marketsLoadAll()} />
+          <SelectController name="scenarios Load All" type="primary" onRun={() => scenariosLoadAll()} />
+          <SelectController name="ohlc Load All" type="primary" onRun={() => ohlcLoadAll()} />
+          <SelectController name="rates Load All" type="primary" onRun={() => ratesLoadAll()} />
         </div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="ohlcLoadAll" type="primary" onRun={() => ohlcLoadAll()} />
-          <SelectController name="ohlcLoadFor" type="info" onRun={() => ohlcLoadFor(symbol)} />
+          <SelectController name={`ohlc Load For ${symbol}`} type="info" onRun={() => ohlcLoadFor(symbol)} />
+          <SelectController name={`ohlc Load For ${symbol}`} type="info" onRun={() => ratesLoadFor(symbol)} />
+        </div>
 
-          <SelectController name="ratesLoadAll" type="primary" onRun={() => ratesLoadAll()} />
-          <SelectController name="ratesLoadFor" type="info" onRun={() => ratesLoadFor(symbol)} />
+        <div className="divider">Timer</div>
+        <div className="p-2 flex flex-row flex-wrap gap-4">
+          <SelectController name="timer Next Day" type="primary" onRun={() => timerNextDay(true)} />
+          <SelectController name="timer Start" type="success" onRun={() => timerStart()} />
+          <SelectController name="timer Stop" type="warning" onRun={() => timerStop(true)} />
+          <SelectController name="timer Reset" type="error" onRun={() => timerReset()} />
         </div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="timerNextDay" type="primary" onRun={() => timerNextDay(true)} />
-          <SelectController name="timerReset" type="error" onRun={() => timerReset()} />
-          <SelectController name="timerStart" type="success" onRun={() => timerStart()} />
-          <SelectController name="timerStop" type="warning" onRun={() => timerStop()} />
+          <SelectController name="timer Start Fast" type="success" onRun={() => timerStart(ScenarioSpeed.Fast)} />
+          <SelectController name="timer Start Medium" type="success" onRun={() => timerStart(ScenarioSpeed.Medium)} />
+          <SelectController name="timer Start Slow" type="success" onRun={() => timerStart(ScenarioSpeed.Slow)} />
         </div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="timerStart" type="success" onRun={() => timerStart(ScenarioSpeed.Fast)} />
-          <SelectController name="timerStart" type="success" onRun={() => timerStart(ScenarioSpeed.Medium)} />
-          <SelectController name="timerStart" type="success" onRun={() => timerStart(ScenarioSpeed.Slow)} />
-          <SelectController name="timerReset 2020-01-06" type="error" onRun={() => timerReset("2020-01-06")} />
+          <SelectController name="timer Reset 1978" type="error" onRun={() => timerReset("1978-04-09")} />
+          <SelectController name="timer Reset 2020" type="error" onRun={() => timerReset("2020-01-06")} />
         </div>
+
+        <div className="divider">Transaction</div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
           <SelectController name="transactionsAdd" type="success" onRun={() => transactionsAdd(+transactionValue, transactionSource as TransactionSource)} />
-          <SelectController name="transactionDepositFunds" value={500} />
+          <SelectController name="transaction Deposit 500" value={500} />
         </div>
 
-        <div className="divider">IndexDB Managers</div>
+        <div className="divider">Trade</div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
-          <SelectController name="contractOpen" onRun={() => contractOpen(timer, market, price, TradeDirection.Call, 1)} />
+          <SelectController name="contract Open CALL 1" onRun={() => contractOpen(symbol, TradeDirection.Call, 1)} />
+          <SelectController name="contract Open PUT 1" onRun={() => contractOpen(symbol, TradeDirection.Put, 1)} />
 
-          <SelectController name={`contractClose ${trade?.id ?? ""}`} onRun={() => contractClose(timer, market, price, trade)} />
+          <SelectController name={`tradeClose ${trade?.id ?? ""}`} disabled={trade?.id == null} onRun={() => contractClose(timer, market, price, trade)} />
         </div>
 
         <div className="divider">Local Controllers</div>
@@ -158,8 +168,6 @@ export default function TestControllersPage({ name = "TestControllersPage", ...r
           <SelectController name="favoritesToggle" onRun={() => favoritesToggle("OJ.F")} />
           <SelectController name="favoritesClear" onRun={() => favoritesClear()} />
         </div>
-
-        <div className="divider">Data</div>
       </div>
     </div>
   )
