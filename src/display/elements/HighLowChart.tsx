@@ -31,7 +31,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function HighLowsDisplay({
+export default function HighLowChart({
   highs,
   lows,
   closes,
@@ -39,7 +39,7 @@ export default function HighLowsDisplay({
   activeTrades,
   inactiveTrades,
   range = "1m",
-  name = "DataSparklineDisplay",
+  name = "HighLowChart",
   ...rest
 }: PropsWithChildren<ComponentProps>) {
   if (highs == null || lows == null || price == null) {

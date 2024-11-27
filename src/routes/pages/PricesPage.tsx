@@ -6,6 +6,7 @@ import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
 
 import { Favorites } from "@/display/controllers/FavoritesSelector"
 import { View } from "@/display/controllers/ViewChooser"
+import BalanceModal from "@/display/coordinators/BalanceModal"
 import PricesHeader from "@/display/coordinators/PricesHeader"
 import SymbolManager from "@/display/coordinators/SymbolManager"
 import TradingFooter from "@/display/coordinators/TradingFooter"
@@ -58,6 +59,7 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
 
   return (
     <div {...rest} data-component={name}>
+      <BalanceModal />
       <div className="h-full w-full flex flex-col">
         <PricesHeader />
         <div className="flex-auto overflow-auto">

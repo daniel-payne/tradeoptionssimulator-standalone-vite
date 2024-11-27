@@ -82,7 +82,7 @@ export default function TradingPage({ name = "TradingPage", ...rest }: PropsWith
               })}
             </div>
           </div>
-          <TradingFooter />
+          <TradingFooter settings={settings} />
         </div>
       </div>
     </div>

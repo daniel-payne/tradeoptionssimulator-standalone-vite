@@ -6,7 +6,11 @@ import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 // import timerLoad from "./timerLoad.old"
 
-import updateTimer from "./timerUpdate"
+import { controller as updateTimer } from "./timerUpdate"
+import { controller as balanceCalculate } from "./balanceCalculate"
+import { controller as timerStop } from "./timerStop"
+import { controller as tradesCloseAll } from "./tradesCloseAll"
+import { controller as tradesCloseExpired } from "./tradesCloseExpired"
 
 // import recalculatePrices from "./recalculatePrices"
 // import recalculateMargins from "./recalculateMargins"
@@ -59,13 +63,25 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
     if (takeControl === true) {
       isTimerActive = false
 
-      await updateTimer({ guid: db.guid, currentIndex, isTimerActive })
+      await updateTimer(db, { guid: db.guid, currentIndex, isTimerActive })
     } else {
-      await updateTimer({ currentIndex: currentIndex })
+      await updateTimer(db, { currentIndex: currentIndex })
     }
   }
-  // }
-  // )
+
+  tradesCloseExpired(db, currentIndex)
+
+  let balance = await balanceCalculate(db)
+
+  if (balance?.availableBalance < 0) {
+    await tradesCloseAll(db)
+  }
+
+  balance = await balanceCalculate(db)
+
+  if (balance?.availableBalance < 0) {
+    await timerStop(db, true)
+  }
 
   const { speed } = currentTimer ?? {}
 

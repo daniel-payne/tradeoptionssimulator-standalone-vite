@@ -11,6 +11,7 @@ import formatDateAsIndex from "@/utilities/formatDateAsIndex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import lastIndexOfMonth from "@/utilities/lastIndexOfMonth"
+import formatNumber from "@/utilities/formatNumber"
 
 type ComponentSettings = {
   showMultiples?: boolean | null | undefined
@@ -34,8 +35,8 @@ export default function ContractDescription({ market, price, timer, settings, na
   const { showMultiples = false } = settings || {}
 
   const midPrice = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
-  const bidPrice = price?.currentBid
-  const askPrice = price?.currentAsk
+  const bidPrice = price?.isMarketClosed ? price?.priorClosingBid : price?.currentBid
+  const askPrice = price?.isMarketClosed ? price?.priorClosingAsk : price?.currentAsk
 
   const midValue = (midPrice ?? 0) * (market?.priceModifier ?? 1)
   const bidValue = (bidPrice ?? 0) * (market?.priceModifier ?? 1)
@@ -51,7 +52,7 @@ export default function ContractDescription({ market, price, timer, settings, na
   const bidPoints = (bidPrice ?? 0) * (contractPoints ?? 1)
   const askPoints = (askPrice ?? 0) * (contractPoints ?? 1)
 
-  const decimalPlaces = midValue < 1 ? 4 : 2
+  const decimalPlaces = market?.priceDecimals ?? 6
 
   const displayMidValue = formatValue(midValue, true, "USD", decimalPlaces)
   const displayBidValue = formatValue(bidValue, true, "USD", decimalPlaces)
@@ -82,6 +83,7 @@ export default function ContractDescription({ market, price, timer, settings, na
     <div {...rest} data-controller={name}>
       <div className="h-full w-full p-2">
         <div className="text-sm fg--heading">For a contract of {market?.name}, i.e.</div>
+
         <div className="text-sm fg--subheading">
           <span>{market?.contractName} to be delivered on</span>
           <br />
@@ -95,7 +97,7 @@ export default function ContractDescription({ market, price, timer, settings, na
               <span>
                 Currently
                 <strong>
-                  &nbsp;{market?.contractSize} {market?.contractUnit}&nbsp;
+                  &nbsp;{formatNumber(market?.contractSize, 0)} {market?.contractUnit}&nbsp;
                 </strong>
                 is trading for you
               </span>
@@ -106,7 +108,7 @@ export default function ContractDescription({ market, price, timer, settings, na
               </span>
               <br />
               <span className="ps-4">
-                to sell at <strong>{displayBidValue} </strong> per {market.contractUnit}
+                to sell at <strong>{displayBidValue}</strong> per {market.contractUnit}
               </span>
             </div>
             <div className="text-sm fg--subheading">
@@ -126,7 +128,6 @@ export default function ContractDescription({ market, price, timer, settings, na
             </div>
           </>
         )}
-
         {!showMultiples && (
           <>
             {displayContractPoints != null && (

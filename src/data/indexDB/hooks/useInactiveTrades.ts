@@ -1,4 +1,4 @@
-import compareObjectsBy from "@/utilities/compareObjectsBy"
+import compareObjectsByDescending from "@/utilities/compareObjectsByDescending"
 import { useLiveQuery } from "dexie-react-hooks"
 import db from "../db"
 import { TradeStatus } from "../enums/TradeStatus"
@@ -8,7 +8,9 @@ export default function useInactiveTrades(limit = 999) {
     return await db.trades?.toArray()
   })
 
-  const result = data?.filter((trade) => trade.status != TradeStatus.Open).sort(compareObjectsBy("no"))
+  const filteredTrades = data?.filter((trade) => trade.status != TradeStatus.Open)
+
+  const result = filteredTrades?.sort(compareObjectsByDescending("no"))
 
   return result?.slice(0, limit)
 }

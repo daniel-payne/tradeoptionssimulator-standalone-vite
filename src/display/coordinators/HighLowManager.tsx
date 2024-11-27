@@ -1,11 +1,11 @@
 import useClosesFor from "@/data/indexDB/hooks/useClosesFor"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import DataSparklineDisplay from "../elements/ClosesDisplay"
+
 import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
-import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
+
 import useHighsFor from "@/data/indexDB/hooks/useHighsFor"
 import useLowsFor from "@/data/indexDB/hooks/useLowsFor"
-import HighLowsDisplay from "../elements/HighLowsDisplay"
+import HighLowChart from "../elements/HighLowChart"
 import useActiveTradesFor from "@/data/indexDB/hooks/useActiveTradesFor"
 import useInactiveTradesFor from "@/data/indexDB/hooks/useInactiveTradesFor"
 import { Settings } from "../Settings"
@@ -40,7 +40,7 @@ export default function HighLowManager({ symbol, settings = {}, name = "HighLowM
 
   return (
     <div {...rest} data-controller={name}>
-      <HighLowsDisplay
+      <HighLowChart
         className="h-full w-full"
         highs={highs}
         lows={lows}

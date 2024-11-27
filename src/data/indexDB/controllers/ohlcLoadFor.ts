@@ -69,9 +69,8 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   LOADING[symbol] = true
 
   const market = await db.markets.get(symbol)
-  const path = market?.filePath
 
-  if (path == null) {
+  if (market?.symbol == null) {
     return
   }
 
@@ -79,7 +78,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     return
   }
 
-  const response = await fetch(`/source_data/${path}`, {})
+  const response = await fetch(`/public/prices/${market.symbol}.txt`, {})
 
   if (response.ok === false) {
     return { error: response.statusText }

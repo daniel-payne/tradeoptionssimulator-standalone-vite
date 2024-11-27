@@ -1,4 +1,4 @@
-import compareObjectsBy from "@/utilities/compareObjectsBy"
+import compareObjectsByDescending from "@/utilities/compareObjectsByDescending"
 import { useLiveQuery } from "dexie-react-hooks"
 import db from "../db"
 
@@ -9,7 +9,7 @@ export default function useActiveTrades() {
     return await db.trades?.where({ status: TradeStatus.Open }).toArray()
   })
 
-  data?.sort(compareObjectsBy("no"))
+  data?.sort(compareObjectsByDescending("no"))
 
   return data
 }

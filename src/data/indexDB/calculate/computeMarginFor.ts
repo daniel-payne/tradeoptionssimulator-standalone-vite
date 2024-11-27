@@ -29,6 +29,8 @@ export default function computeMarginFor(trade: TradeOrNothing, market: MarketOr
 
     const currentValue = entryValue + currentProfit
 
+    const currentIndex = price.currentIndex
+
     // const currentValue = ((currentPrice * priceModifier) / priceSize) * (amount ?? 0)
 
     // const currentDifference = currentValue - entryValue
@@ -47,6 +49,7 @@ export default function computeMarginFor(trade: TradeOrNothing, market: MarketOr
       entryPrice,
       entryValue,
 
+      currentIndex,
       currentPrice,
       currentDifference,
       currentPercent,

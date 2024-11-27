@@ -37,7 +37,7 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
       exitIndex = price?.currentIndex
     }
 
-    if (trade.size === 1) {
+    if (trade.size != null) {
       if (price?.isMarketClosed) {
         exitPrice = price?.nextOpen
       } else {

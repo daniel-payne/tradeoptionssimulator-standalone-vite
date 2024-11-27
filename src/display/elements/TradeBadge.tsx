@@ -8,16 +8,19 @@ import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 import useTradeFor from "@/data/indexDB/hooks/useTradeFor"
 import formatValue from "@/utilities/formatValue"
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import type { Settings } from "../Settings"
 
 type ComponentProps = {
   // trade?: Trade | undefined | null
   // margin?: Margin | undefined | null
   id: string | undefined | null
 
+  settings?: Settings
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function TradeBadge({ id, name = "TradeBadge", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function TradeBadge({ id, settings = {}, name = "TradeBadge", ...rest }: PropsWithChildren<ComponentProps>) {
   const trade = useTradeFor(id)
   const price = usePriceFor(trade?.symbol)
   const market = useMarketFor(trade?.symbol)
@@ -29,31 +32,43 @@ export default function TradeBadge({ id, name = "TradeBadge", ...rest }: PropsWi
   const value = isActive ? margin?.currentProfit ?? 0 : trade?.profit ?? 0
 
   const displayValue = formatValue(Math.abs(value))
-  let classNames
 
-  // = isActive ? "rounded px-2 py-1 bg-profit text-sm" : "rounded px-2 py-1 outline-loss text-loss text-sm"
+  let classNames = "btn btn-sm"
 
   if (isActive) {
     if (value > 0) {
-      classNames = "rounded px-2 py-1 bg-profit text-sm"
+      classNames += " bg-profit"
     } else if (value < 0) {
-      classNames = "rounded px-2 py-1 bg-loss text-sm"
+      classNames += " bg-loss "
     } else {
-      classNames = "rounded px-2 py-1 bg-neutral text-sm"
+      classNames += " bg-neutral  "
     }
   } else {
     if (value > 0) {
-      classNames = "rounded px-2 py-1 outline-profit text-profit text-sm"
+      classNames += " outline-profit text-profit "
     } else if (value < 0) {
-      classNames = "rounded px-2 py-1 outline-loss text-loss text-sm"
+      classNames += " outline-loss text-loss "
     } else {
-      classNames = "rounded px-2 py-1 outline-neutral text-neutral text-sm"
+      classNames += " outline-neutral text-neutral "
+    }
+  }
+
+  const handleClick = () => {
+    if (isActive) {
+      if (settings.onAction) {
+        settings.onAction({
+          action: "tradeClose",
+          options: {
+            id,
+          },
+        })
+      }
     }
   }
 
   return (
     <div {...rest} data-component={name}>
-      <div className={classNames}>
+      <div className={classNames} onClick={handleClick}>
         <span className="font-xs fg--subheading">{market?.name}</span>
         &nbsp;
         {displayValue}

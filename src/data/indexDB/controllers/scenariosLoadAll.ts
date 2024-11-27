@@ -13,7 +13,7 @@ export async function controller(db: PriceSimulatorDexie) {
     return
   }
 
-  const response = await fetch(`/source_data/Scenarios.csv`, {})
+  const response = await fetch(`/public/setup/Scenarios.csv`, {})
 
   if (response.ok === false) {
     return { error: response.statusText }

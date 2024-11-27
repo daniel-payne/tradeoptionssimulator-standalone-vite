@@ -69,7 +69,7 @@ export default function BalanceModal({ name = "BalanceModal", children, ...rest 
           <div className="flex flex-row gap-2">
             <div className={`w-24 ${transactionBalance < 0 ? "text-loss" : "text-profit"}  text-right`}>{formatValue(transactionBalance)}</div>
             <div className="fg--subheading">Profits from prior trades</div>
-            <Link to="/trading-history">
+            <Link to="/history">
               <button className="btn btn-primary btn-outline btn-xs">Show Full Trading History</button>
             </Link>
           </div>

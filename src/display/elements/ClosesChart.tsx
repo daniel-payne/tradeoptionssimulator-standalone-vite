@@ -14,7 +14,8 @@ import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import type { Range } from "@/display/controllers/RangeChooser"
 
 type ComponentProps = {
-  display: Array<number | null | undefined> | null | undefined
+  closes: Array<number | null | undefined> | null | undefined
+
   price: PriceOrNothing
 
   range?: Range | null | undefined
@@ -22,12 +23,12 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ClosesDisplay({ display: marketData, price, range = "1m", name = "ClosesDisplay", ...rest }: PropsWithChildren<ComponentProps>) {
-  if (marketData == null || price == null) {
+export default function ClosesChart({ closes, price, range = "1m", name = "ClosesChart", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (closes == null || price == null) {
     return null
   }
 
-  if ((marketData?.length ?? 0) === 0) {
+  if ((closes?.length ?? 0) === 0) {
     return null
   }
 
@@ -43,9 +44,9 @@ export default function ClosesDisplay({ display: marketData, price, range = "1m"
 
   const endDataIndex = priorIndex ?? 0
 
-  const displayCloses = price == null ? marketData : marketData?.slice(0, endDataIndex + 1) ?? []
+  const displayCloses = price == null ? closes : closes?.slice(0, endDataIndex + 1) ?? []
 
-  const labels = marketData.map((_, index) => index)
+  const labels = closes.map((_, index) => index)
 
   const displayPointRadius = range === "1m" || range === "3m" ? 2 : 0
 

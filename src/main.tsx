@@ -20,6 +20,7 @@ import TradingPage from "./routes/pages/TradingPage"
 import ScenariosPage from "./routes/pages/ScenariosPage"
 import PricesPage from "./routes/pages/PricesPage"
 import ScenarioPage from "./routes/pages/ScenarioPage"
+import HistoryPage from "./routes/pages/HistoryPage"
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
   {
     path: "/trading/:symbols",
     element: <TradingPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+  },
+  {
+    path: "/history",
+    element: <HistoryPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
   },
 

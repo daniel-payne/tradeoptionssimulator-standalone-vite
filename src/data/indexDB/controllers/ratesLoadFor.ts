@@ -45,15 +45,14 @@ export async function controller(db: PriceSimulatorDexie, code: string | undefin
   }
 
   const currency = await db.currencies.get(code)
-  const path = currency?.filePath
 
-  if (path == null) {
+  if (currency?.code == null) {
     return
   }
 
   await db.rates.where({ code }).delete()
 
-  const response = await fetch(`/source_data` + path, {})
+  const response = await fetch(`/public/rates/${currency?.code}.csv`, {})
 
   if (response.ok === false) {
     return { error: response.statusText }
