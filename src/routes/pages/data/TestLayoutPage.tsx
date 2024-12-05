@@ -1,5 +1,5 @@
 import { useState, type HTMLAttributes, type PropsWithChildren } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 import favoritesAdd from "@/data/localStorage/controllers/favoritesAdd"
 import favoritesRemove from "@/data/localStorage/controllers/favoritesRemove"

@@ -1,6 +1,6 @@
 // import { useQueryState } from "@keldan-systems/state-mutex"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 type ComponentProps = {
   title?: string

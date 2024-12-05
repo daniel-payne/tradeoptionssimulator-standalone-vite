@@ -31,22 +31,30 @@ export async function controller(db: PriceSimulatorDexie) {
 
   const userBalance =
     transactions?.reduce((acc, transaction) => {
-      return acc + (transaction.source === "USER" ? transaction.value : 0)
+      const add = transaction.source === "USER" ? transaction.value : 0
+
+      return acc + add
     }, 0) ?? 0
 
   const transactionBalance =
     transactions?.reduce((acc, transaction) => {
-      return acc + (transaction.source !== "USER" ? transaction.value : 0)
+      const add = transaction.source === "TRADE" ? transaction.value : 0
+
+      return acc + add
     }, 0) ?? 0
 
   const initialBalance =
     activeTrades?.reduce((acc, trade) => {
-      return acc + trade.amount * INITIAL_MARGIN_REQUIREMENT * -1
+      const add = trade.amount * INITIAL_MARGIN_REQUIREMENT * -1
+
+      return acc + add
     }, 0) ?? 0
 
   const variationBalance =
     variationMargins?.reduce((acc, margin) => {
-      return acc + margin.currentProfit
+      const add = margin.currentProfit
+
+      return acc + add
     }, 0) ?? 0
 
   const availableBalance = userBalance + transactionBalance + initialBalance + variationBalance

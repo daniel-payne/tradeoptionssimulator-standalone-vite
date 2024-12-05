@@ -1,5 +1,5 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { ErrorResponse, useRouteError } from "react-router-dom"
+import { ErrorResponse, useRouteError } from "react-router"
 
 type ComponentProps = {
   name?: string

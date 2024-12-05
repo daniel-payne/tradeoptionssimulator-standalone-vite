@@ -2,7 +2,7 @@ import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import { PriceOrNothing } from "@/data/indexDB/types/Price"
 import formatNumber from "@/utilities/formatNumber"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 type ComponentProps = {
   market: MarketOrNothing

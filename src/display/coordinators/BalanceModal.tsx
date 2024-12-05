@@ -3,7 +3,7 @@ import clearUserData from "@/data/indexDB/controllers/clearUserData"
 import useBalance from "@/data/indexDB/hooks/useBalance"
 import formatValue from "@/utilities/formatValue"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 export const BALANCE_MODAL = "BalanceModal"
 

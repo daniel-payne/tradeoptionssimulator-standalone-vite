@@ -15,7 +15,7 @@ import { Settings } from "@/display/Settings"
 import sizeForCount from "@/utilities/sizeForCount"
 import { type HTMLAttributes, type PropsWithChildren } from "react"
 
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import actionProcess from "@/data/indexDB/controllers/actionProcess"
 
 type ComponentProps = {

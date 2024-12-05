@@ -23,6 +23,7 @@ import useBalance from "../hooks/useBalance"
 import balanceCalculate from "./balanceCalculate"
 import { INITIAL_MARGIN_REQUIREMENT } from "../constants/INITIAL_MARGIN_REQUIREMENT"
 import formatValue from "@/utilities/formatValue"
+import computeContractValueFor from "../calculate/computeContractValueFor"
 
 export async function controller(
   db: PriceSimulatorDexie,
@@ -58,9 +59,7 @@ export async function controller(
     sizeValue = 2
   }
 
-  const midPrice = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
-  const contractPoints = ((market?.contractSize ?? 1) / (market?.priceSize ?? 1)) * (market?.priceModifier ?? 1)
-  const contractValue = (midPrice ?? 0) * (contractPoints ?? 1) * sizeValue
+  const contractValue = computeContractValueFor(market, price) ?? 1
 
   if (contractValue * INITIAL_MARGIN_REQUIREMENT > availableBalance) {
     throw new Error(`Insufficient funds, you need to have ${formatValue(contractValue * INITIAL_MARGIN_REQUIREMENT)} to complete this trade`)

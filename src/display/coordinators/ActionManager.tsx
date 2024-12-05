@@ -1,17 +1,18 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { Settings } from "../Settings"
 import ContractOpenActions from "../components/ContractOpenActions"
-import { MarketOrNothing } from "@/data/indexDB/types/Market"
-import { PriceOrNothing } from "@/data/indexDB/types/Price"
-import useTimer from "@/data/indexDB/hooks/useTimer"
+// import { MarketOrNothing } from "@/data/indexDB/types/Market"
+// import { PriceOrNothing } from "@/data/indexDB/types/Price"
+// import useTimer from "@/data/indexDB/hooks/useTimer"
 import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 import useActiveLatestTradeFor from "@/data/indexDB/hooks/useActiveLatestTradeFor"
-import useInactiveLatestTradeFor from "@/data/indexDB/hooks/useInactiveLatestTradeFor"
+// import useInactiveLatestTradeFor from "@/data/indexDB/hooks/useInactiveLatestTradeFor"
 import ContractCloseAction from "../components/ContractCloseAction"
 import TradePositionDisplay from "../components/TradePositionDisplay"
 import useVariationMarginFor from "@/data/indexDB/hooks/useVariationMarginFor"
-import formatValue from "@/utilities/formatValue"
+// import formatValue from "@/utilities/formatValue"
+import computeContractValueFor from "@/data/indexDB/calculate/computeContractValueFor"
 
 type ComponentProps = {
   symbol?: string
@@ -24,12 +25,12 @@ type ComponentProps = {
 export default function ActionManager({ symbol, settings = {}, name = "TradingActions", children, ...rest }: PropsWithChildren<ComponentProps>) {
   const { trade = "contract" } = settings
 
-  const timer = useTimer()
+  // const timer = useTimer()
   const market = useMarketFor(symbol)
   const price = usePriceFor(symbol)
 
   const currentTrade = useActiveLatestTradeFor(symbol)
-  const lastTrade = useInactiveLatestTradeFor(symbol)
+  // const lastTrade = useInactiveLatestTradeFor(symbol)
 
   const margin = useVariationMarginFor(currentTrade?.id)
 
@@ -37,9 +38,7 @@ export default function ActionManager({ symbol, settings = {}, name = "TradingAc
     return
   }
 
-  const midPrice = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
-  const contractPoints = ((market?.contractSize ?? 1) / (market?.priceSize ?? 1)) * (market?.priceModifier ?? 1)
-  const contractValue = (midPrice ?? 0) * (contractPoints ?? 1)
+  const contractValue = computeContractValueFor(market, price)
 
   return (
     <div {...rest} data-component={name}>

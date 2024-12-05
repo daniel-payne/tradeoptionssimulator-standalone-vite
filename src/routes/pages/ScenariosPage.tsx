@@ -3,7 +3,7 @@ import ScenariosHeader from "@/display/coordinators/ScenariosHeader"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { FaVideo } from "react-icons/fa6"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 type ComponentProps = {
   name?: string
