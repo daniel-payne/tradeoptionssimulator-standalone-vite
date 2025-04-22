@@ -47,22 +47,57 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(2).stores({
+    this.version(10).stores({
       timer: "guid",
 
-      scenarios: "ref",
+      scenarios: "ref, name",
+      markets: "symbol, name",
+      currencies: "code, name",
 
-      markets: "symbol",
-      opens: "symbol",
-      highs: "symbol",
-      lows: "symbol",
-      closes: "symbol",
+      trades: "id, symbol, status, [symbol+status]",
+      transactions: "reference,  timestamp",
 
-      currencies: "code",
-      rates: "code",
+      marketHighs: "symbol",
+      marketLows: "symbol",
+      marketOpens: "symbol",
+      marketCloses: "symbol",
+      marketVolumes: "symbol",
+      marketInterests: "symbol",
 
-      trades: "id, symbol, status, [id+status], [symbol+status]",
-      transactions: "id, timestamp",
+      averageOpenCloses: "symbol",
+      averageHighLows: "symbol",
+
+      percentageCloseYesterdays: "symbol",
+      percentageOpenCloses: "symbol",
+      percentageHighLows: "symbol",
+
+      logSquaredHighLows: "symbol",
+      logSquaredCloseOpens: "symbol",
+
+      logOpenYesterdays: "symbol",
+      logHighOpens: "symbol",
+      logLowOpens: "symbol",
+      logCloseOpens: "symbol",
+
+      garminKlassValues: "symbol",
+      rogersSatchellValues: "symbol",
+
+      overnightVolatilities: "[symbol+duration]",
+      parkinsonVolatilities: "[symbol+duration]",
+      rogersSatchellVolatilities: "[symbol+duration]",
+      garminKlassVolatilities: "[symbol+duration]",
+      yangZhangVolatilities: "[symbol+duration]",
+
+      currencyRates: "key",
+
+      priceSummaries: "symbol",
+      rateSummaries: "key",
+
+      currentBalance: "guid",
+      currentPrices: "symbol",
+      currentVolatilities: "symbol",
+      currentRates: "key",
+      currentMargins: "id, status",
     })
 
     this.guid = generateID()
