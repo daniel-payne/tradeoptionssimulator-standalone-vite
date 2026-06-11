@@ -1,5 +1,5 @@
 {
-  "name": "pricesimulator-client",
+  "name": "pricesimulator-standalone-vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
