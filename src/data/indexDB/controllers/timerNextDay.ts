@@ -12,11 +12,14 @@ import { controller as timerStop } from "./timerStop"
 import { controller as tradesCloseAll } from "./tradesCloseAll"
 import { controller as tradesCloseExpired } from "./tradesCloseExpired"
 
+import { controller as getTimer } from "./getTimer"
+import { controller as recalculateAll } from "./recalculateAll"
+
 // import recalculatePrices from "./recalculatePrices"
 // import recalculateMargins from "./recalculateMargins"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
-  const currentTimer = await getTimer()
+  const currentTimer = await getTimer(db)
 
   // await db.transaction(
   //   "rw",
@@ -55,12 +58,12 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
     if (takeControl === true) {
       isTimerActive = false
 
-      await updateTimer({ guid: db.guid, currentIndex, isTimerActive })
+      await updateTimer(db, { guid: db.guid, currentIndex, isTimerActive })
     } else {
-      await updateTimer({ currentIndex: currentIndex })
+      await updateTimer(db, { currentIndex: currentIndex })
     }
 
-    await recalculateAll()
+    await recalculateAll(db)
   }
   //  }
   //)

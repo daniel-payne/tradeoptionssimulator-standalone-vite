@@ -1,30 +1,19 @@
 import type { Category } from "@/data/indexDB/types/Category"
 import pluralWord from "@/utilities/pluralWord"
 import capitalizedWord from "@/utilities/capitalizedWord"
-<<<<<<< HEAD
 import useActiveMarkets from "./useActiveMarkets"
 import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
 
 export default function useMarketsByCategories(showOnlyFavorites = false): Array<Category> | undefined {
-=======
-import useMarkets from "./useMarkets"
-import useActiveMarkets from "./useActiveMarkets"
-
-export default function useMarketsByCategories(): Array<Category> | undefined {
->>>>>>> 371de67 (pre 4 tailwind)
   const markets = useActiveMarkets()
 
   const categories: Array<Category> = []
 
-<<<<<<< HEAD
   const favoritesList = useFavoriteList()
 
   const list = showOnlyFavorites ? markets?.filter((market) => favoritesList.includes(market.symbol)) : markets
 
   for (const market of list || []) {
-=======
-  for (const market of markets || []) {
->>>>>>> 371de67 (pre 4 tailwind)
     const name = market.category
 
     let category = categories.find((category) => category.name === name)

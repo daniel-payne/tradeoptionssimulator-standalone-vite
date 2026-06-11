@@ -13,6 +13,17 @@ import type { MarketData } from "./types/MarketData"
 import type { CurrencyData } from "./types/CurrencyData"
 import type { Currency } from "./types/Currency"
 
+import type { Margin } from "@/data/indexDB/types/Margin"
+import type { Balance } from "@/data/indexDB/types/Balance"
+import type { Price } from "@/data/indexDB/types/Price"
+import type { Rate } from "@/data/indexDB/types/Rate"
+import type { PriceSummary } from "@/data/indexDB/types/PriceSummary"
+import type { RateSummary } from "@/data/indexDB/types/RateSummary"
+import type { SymbolData } from "@/data/indexDB/types/SymbolData"
+import type { RangeData } from "@/data/indexDB/types/RangeData"
+import type { KeyData } from "@/data/indexDB/types/KeyData"
+import type { Volatility } from "./types/Volatility"
+
 export const DIXIE_BALANCE_KEY = "DIXIE_BALANCE_KEY"
 
 export class PriceSimulatorDexie extends Dexie {
@@ -37,6 +48,48 @@ export class PriceSimulatorDexie extends Dexie {
 
   trades!: Table<Trade>
   transactions!: Table<Transaction>
+
+  marketHighs!: Table<SymbolData>
+  marketLows!: Table<SymbolData>
+  marketOpens!: Table<SymbolData>
+  marketCloses!: Table<SymbolData>
+  marketVolumes!: Table<SymbolData>
+  marketInterests!: Table<SymbolData>
+
+  averageOpenCloses!: Table<SymbolData>
+  averageHighLows!: Table<SymbolData>
+
+  percentageCloseYesterdays!: Table<SymbolData>
+  percentageOpenCloses!: Table<SymbolData>
+  percentageHighLows!: Table<SymbolData>
+
+  logSquaredHighLows!: Table<SymbolData>
+  logSquaredCloseOpens!: Table<SymbolData>
+
+  logOpenYesterdays!: Table<SymbolData>
+  logHighOpens!: Table<SymbolData>
+  logLowOpens!: Table<SymbolData>
+  logCloseOpens!: Table<SymbolData>
+
+  garminKlassValues!: Table<SymbolData>
+  rogersSatchellValues!: Table<SymbolData>
+
+  overnightVolatilities!: Table<RangeData>
+  parkinsonVolatilities!: Table<RangeData>
+  rogersSatchellVolatilities!: Table<RangeData>
+  garminKlassVolatilities!: Table<RangeData>
+  yangZhangVolatilities!: Table<RangeData>
+
+  currencyRates!: Table<KeyData>
+
+  priceSummaries!: Table<PriceSummary>
+  rateSummaries!: Table<RateSummary>
+
+  currentBalance!: Table<Balance>
+  currentPrices!: Table<Price>
+  currentVolatilities!: Table<Volatility>
+  currentRates!: Table<Rate>
+  currentMargins!: Table<Margin>
 
   opensCache: Record<string, Array<number | null | undefined> | null | undefined> = {}
   highsCache: Record<string, Array<number | null | undefined> | null | undefined> = {}

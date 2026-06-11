@@ -16,12 +16,7 @@ export default function useActiveMarkets(): Array<Market> | undefined {
 
   const activeMarkets = markets?.filter((market) => market.firstActiveIndex <= (currentIndex ?? 0))
 
-<<<<<<< HEAD
-=======
-    return matchedPrice != null
-  })
 
->>>>>>> 371de67 (pre 4 tailwind)
   activeMarkets?.sort(compareObjectsBy("name"))
 
   return activeMarkets

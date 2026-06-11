@@ -7,17 +7,13 @@ import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 import type { Currency } from "@/data/indexDB/types/Currency"
 
 export async function controller(db: PriceSimulatorDexie) {
-<<<<<<< HEAD:src/data/indexDB/controllers/currenciesLoadAll.ts
   const count = await db.currencies.count()
 
   if (count > 0) {
     return
   }
 
-  const response = await fetch(`/public/setup/Currencies.csv`, {})
-=======
   const response = await fetch(`/setup/Currencies.csv`, {})
->>>>>>> 371de67 (pre 4 tailwind):src/data/indexDB/controllers/loadCurrencies.ts
 
   if (response.ok === false) {
     return { error: response.statusText }

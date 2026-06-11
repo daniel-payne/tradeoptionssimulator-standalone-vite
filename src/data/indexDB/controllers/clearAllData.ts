@@ -19,13 +19,12 @@ export async function controller(db: PriceSimulatorDexie) {
 
   await db.rates.clear()
 
-<<<<<<< HEAD
   db.opensCache = {}
   db.highsCache = {}
   db.lowsCache = {}
   db.closesCache = {}
   db.ratesCache = {}
-=======
+
   await db.percentageCloseYesterdays.clear()
   await db.percentageOpenCloses.clear()
   await db.percentageHighLows.clear()
@@ -57,7 +56,6 @@ export async function controller(db: PriceSimulatorDexie) {
   await db.currentVolatilities.clear()
   await db.currentRates.clear()
   await db.currentMargins.clear()
->>>>>>> 371de67 (pre 4 tailwind)
 
   return
 }

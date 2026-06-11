@@ -47,7 +47,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-const SelectHook = ({ name, symbol, code, disabled, onSelect }: PropsWithChildren<any>): JSX.Element => {
+const SelectHook = ({ name, symbol, code, disabled, onSelect }: PropsWithChildren<any>): React.JSX.Element => {
   let displayName
 
   if (symbol != null) {

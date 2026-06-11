@@ -7,17 +7,13 @@ import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 import type { Scenario } from "@/data/indexDB/types/Scenario"
 
 export async function controller(db: PriceSimulatorDexie) {
-<<<<<<< HEAD:src/data/indexDB/controllers/scenariosLoadAll.ts
   const count = await db.scenarios.count()
 
   if (count > 0) {
     return
   }
 
-  const response = await fetch(`/public/setup/Scenarios.csv`, {})
-=======
   const response = await fetch(`/setup/Scenarios.csv`, {})
->>>>>>> 371de67 (pre 4 tailwind):src/data/indexDB/controllers/loadScenarios.ts
 
   if (response.ok === false) {
     return { error: response.statusText }

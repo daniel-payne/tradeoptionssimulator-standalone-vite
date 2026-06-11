@@ -78,6 +78,7 @@ export async function controller(db: PriceSimulatorDexie, id: string, closingPri
         // }
 
         await db.transactions?.add({
+          id: generateID(),
           reference: generateID(),
           index: currentIndex,
           source: "TRADE",

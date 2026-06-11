@@ -1,4 +1,5 @@
 import useMarkets from "@/data/indexDB/hooks/useMarkets"
+import type { Market } from "@/data/indexDB/types/Market"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

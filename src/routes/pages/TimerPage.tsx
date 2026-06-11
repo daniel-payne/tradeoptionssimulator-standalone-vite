@@ -30,9 +30,9 @@ export default function StatusesPage({ name = "StatusesPage", ...rest }: PropsWi
           </button>
         </div>
         <div className="flex-auto flex flex-row flex-wrap gap-0">
-          <div className="w-96 p-2" key={timer?.id}>
+          <div className="w-96 p-2" key={timer?.guid}>
             <div className="w-full h-full border border-primary rounded-xl p-2 overflow-hidden">
-              <div className="text-primary text-xl font-bold">{timer?.id}</div>
+              <div className="text-primary text-xl font-bold">{timer?.guid}</div>
               {showJson && <pre>{JSON.stringify(timer, null, 2)}</pre>}
               <div className="text-secondary font-bold">{formatIndexAsDate(timer?.currentIndex)}&nbsp;</div>
               <div className="text-secondary">{formatIndexAsDay(timer?.currentIndex)}&nbsp;</div>

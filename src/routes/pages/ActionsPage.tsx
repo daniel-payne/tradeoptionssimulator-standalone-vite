@@ -25,13 +25,13 @@ import { OptionExecution } from "@/data/indexDB/enums/OptionExecution"
 import formatIndexAsDay from "@/utilities/formatIndexAsDay"
 import formatIndexAsDate from "@/utilities/formatIndexAsDate"
 import clearUserData from "@/data/indexDB/controllers/clearUserData"
-import loadApplication from "@/data/indexDB/controllers/loadApplication"
-import loadDataForAllSymbols from "@/data/indexDB/controllers/loadDataForAllSymbols"
+import applicationLoad from "@/data/indexDB/controllers/applicationLoad"
+import ohlcLoadAll from "@/data/indexDB/controllers/ohlcLoadAll"
 import clearAllData from "@/data/indexDB/controllers/clearAllData"
-import loadDataForAllKeys from "@/data/indexDB/controllers/loadDataForAllKeys"
+import ratesLoadAll from "@/data/indexDB/controllers/ratesLoadAll.1"
 
 import addTransaction from "@/data/indexDB/controllers/addTransaction"
-import loadDataForSymbol from "@/data/indexDB/controllers/loadDataForSymbol"
+import ohlcLoadFor from "@/data/indexDB/controllers/ohlcLoadFor"
 import recalculateAll from "@/data/indexDB/controllers/recalculateAll"
 import lastIndexOfMonth from "@/utilities/lastIndexOfMonth"
 import openContract from "@/data/indexDB/controllers/openContract"
@@ -157,16 +157,16 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
   }
 
   const actionLoadApplication = async () => {
-    await loadApplication()
+    await applicationLoad()
   }
 
   const actionLoadAllData = async () => {
-    await loadDataForAllSymbols()
-    await loadDataForAllKeys()
+    await ohlcLoadAll()
+    await ratesLoadAll()
   }
 
   const actionLoadSymbol = (symbol: string) => async () => {
-    await loadDataForSymbol(symbol)
+    await ohlcLoadFor(symbol)
     await recalculateAll()
   }
 
@@ -309,7 +309,7 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
               Fast
             </button>
 
-            <button className="btn btn-error" onClick={timerStop}>
+            <button className="btn btn-error" onClick={() => timerStop()}>
               Stop
             </button>
 

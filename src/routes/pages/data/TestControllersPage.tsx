@@ -39,7 +39,7 @@ import favoritesAdd from "@/data/localStorage/controllers/favoritesAdd"
 import favoritesRemove from "@/data/localStorage/controllers/favoritesRemove"
 import favoritesToggle from "@/data/localStorage/controllers/favoritesToggle"
 
-const SelectController = ({ name, disabled, type, large, onRun }: PropsWithChildren<any>): JSX.Element => {
+const SelectController = ({ name, disabled, type, large, onRun }: PropsWithChildren<any>): React.JSX.Element => {
   let displayClasses = "w-48 btn btn-sm"
 
   if (type == null || type === "primary") {

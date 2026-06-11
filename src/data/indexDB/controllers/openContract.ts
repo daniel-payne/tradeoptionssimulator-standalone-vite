@@ -34,8 +34,8 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
   let entryPrice
   let entryCost
 
-  let priceModifier = +market?.priceModifier ?? 1
-  let priceSize = +market?.priceSize ?? 1
+  let priceModifier = market?.priceModifier != null ? +market.priceModifier : 1
+  let priceSize = market?.priceSize != null ? +market.priceSize : 1
 
   if (!Number.isFinite(priceModifier)) {
     priceModifier = 1
