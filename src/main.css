@@ -1,7 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: business;
+}
 
+@plugin "daisyui/theme" {
+  name: "business";
+  --rounded-box: 1rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 1.9rem;
+}
 
 /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 .h-128 {
