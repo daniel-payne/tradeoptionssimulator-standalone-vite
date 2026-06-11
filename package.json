@@ -1,8 +1,8 @@
 {
-  "name": "pricesimulator-standalone-vite",
+  "name": "tradeoptionssimulator-standalone-vite",
   "private": true,
   "version": "0.0.0",
-  "description": "A standalone Vite-based web simulator to explain how trading in financial markets works.",
+  "description": "A web simulator to explain how trading in financial markets works.",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
