@@ -5,6 +5,7 @@ import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
 import ClosesChart from "../elements/ClosesChart"
 import { Settings } from "../Settings"
+import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 
 type ComponentProps = {
   symbol: string
@@ -17,6 +18,7 @@ type ComponentProps = {
 export default function ClosesManager({ symbol, settings = {}, name = "ClosesManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const closes = useClosesFor(symbol)
   const price = usePriceFor(symbol)
+  const market = useMarketFor(symbol)
 
   const { range = "1m" } = settings
 
@@ -30,7 +32,7 @@ export default function ClosesManager({ symbol, settings = {}, name = "ClosesMan
 
   return (
     <div {...rest} data-controller={name}>
-      <ClosesChart className="h-full w-full" closes={closes} price={price} range={range} />
+      <ClosesChart className="h-full w-full" closes={closes} price={price} range={range} firstActiveIndex={market?.firstActiveIndex} />
     </div>
   )
 }

@@ -30,7 +30,7 @@ export default function AccountSummary({ name = "AccountSummary", ...rest }: Pro
   return (
     <div {...rest} data-controller={name}>
       <div className={displayClassName} onClick={handleShowBalanceModal}>
-        {displayBalance}
+        {availableBalance !== 0 ? displayBalance : ''}
       </div>
     </div>
   )

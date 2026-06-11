@@ -14,7 +14,7 @@ export async function controller(db: PriceSimulatorDexie, instructions: any) {
 
   const { symbol, size, direction, id } = options
 
-  timerStop(db, true)
+  await timerStop(db, true)
   // alert(JSON.stringify({ action, options: { symbol, size, direction } }, null, 2))
 
   switch (action) {

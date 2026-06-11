@@ -10,29 +10,26 @@ import { DEFAULT_START } from "../constants/DEFAULT_START"
 export async function controller(db: PriceSimulatorDexie, newValues: Partial<Timer> = {}) {
   const guid = db.guid
 
-  const collection = await db.timer.limit(1)
-  const currentTimer = await collection.first()
-
   const defaultTimer = {
     guid,
     speed: ScenarioSpeed.Slow,
-    startDay: DEFAULT_START,
-    currentDay: DEFAULT_START,
-    currentTimestamp: new Date(DEFAULT_START).getTime(),
+    currentIndex: DEFAULT_START,
     isTimerActive: false,
   }
 
-  let updatedTimer: Timer | undefined
-
-  if (currentTimer == null) {
-    updatedTimer = { ...defaultTimer, ...newValues, guid }
-  } else if (currentTimer.guid === guid) {
-    updatedTimer = { ...currentTimer, ...newValues }
-  } else {
-    updatedTimer = { ...currentTimer, ...newValues, guid }
-  }
-
   await db.transaction("rw", ["timer"], async () => {
+    const currentTimer = await db.timer.limit(1).first()
+
+    let updatedTimer: Timer | undefined
+
+    if (currentTimer == null) {
+      updatedTimer = { ...defaultTimer, ...newValues, guid }
+    } else if (currentTimer.guid === guid) {
+      updatedTimer = { ...currentTimer, ...newValues }
+    } else {
+      updatedTimer = { ...currentTimer, ...newValues, guid }
+    }
+
     await db.timer.clear()
     await db.timer.add(updatedTimer)
   })

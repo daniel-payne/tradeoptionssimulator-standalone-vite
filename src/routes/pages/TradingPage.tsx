@@ -1,6 +1,7 @@
 import timerStart from "@/data/indexDB/controllers/timerStart"
 import timerStop from "@/data/indexDB/controllers/timerStop"
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
+import timerUpdate from "@/data/indexDB/controllers/timerUpdate"
 
 import tradeClose from "@/data/indexDB/controllers/tradeClose"
 import contractOpen from "@/data/indexDB/controllers/contractOpen"
@@ -13,7 +14,7 @@ import TradingFooter from "@/display/coordinators/TradingFooter"
 import TradingHeader from "@/display/coordinators/TradingHeader"
 import { Settings } from "@/display/Settings"
 import sizeForCount from "@/utilities/sizeForCount"
-import { type HTMLAttributes, type PropsWithChildren } from "react"
+import { useEffect, type HTMLAttributes, type PropsWithChildren } from "react"
 
 import { useParams } from "react-router"
 import actionProcess from "@/data/indexDB/controllers/actionProcess"
@@ -33,6 +34,12 @@ export default function TradingPage({ name = "TradingPage", ...rest }: PropsWith
   }
 
   const symbolList = symbols?.split(",")
+
+  useEffect(() => {
+    if (symbolList && symbolList.length > 0) {
+      timerUpdate({ activeSymbols: symbolList })
+    }
+  }, [symbolList?.join(",")])
 
   const displayWrapperClassName = "h-full w-full min-h-0 min-w-0 flex flex-row flex-wrap overflow-hidden justify-start items-start"
 

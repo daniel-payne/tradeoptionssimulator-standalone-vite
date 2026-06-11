@@ -26,7 +26,7 @@ export async function controller(db: PriceSimulatorDexie, value: number, source:
     reference,
   } as Transaction
 
-  db.transactions.add(newTransaction)
+  await db.transactions.add(newTransaction)
 
   return newTransaction
 }

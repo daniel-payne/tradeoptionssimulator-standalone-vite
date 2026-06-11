@@ -98,9 +98,9 @@ export class PriceSimulatorDexie extends Dexie {
   ratesCache: Record<string, Array<number | null | undefined> | null | undefined> = {}
 
   constructor() {
-    super("PriceSimulator_v11")
+    super("PriceSimulator")
 
-    this.version(11).stores({
+    this.version(12).stores({
       timer: "guid",
 
       scenarios: "ref, name",
@@ -108,7 +108,7 @@ export class PriceSimulatorDexie extends Dexie {
       currencies: "code, name",
 
       trades: "id, symbol, status, [symbol+status]",
-      transactions: "reference,  timestamp",
+      transactions: "id, reference, index, source",
 
       opens: "symbol",
       highs: "symbol",

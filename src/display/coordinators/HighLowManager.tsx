@@ -5,6 +5,7 @@ import usePriceFor from "@/data/indexDB/hooks/usePriceFor"
 
 import useHighsFor from "@/data/indexDB/hooks/useHighsFor"
 import useLowsFor from "@/data/indexDB/hooks/useLowsFor"
+import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 import HighLowChart from "../elements/HighLowChart"
 import useActiveTradesFor from "@/data/indexDB/hooks/useActiveTradesFor"
 import useInactiveTradesFor from "@/data/indexDB/hooks/useInactiveTradesFor"
@@ -23,6 +24,7 @@ export default function HighLowManager({ symbol, settings = {}, name = "HighLowM
   const lows = useLowsFor(symbol)
   const closes = useClosesFor(symbol)
 
+  const market = useMarketFor(symbol)
   const price = usePriceFor(symbol)
 
   const activeTrades = useActiveTradesFor(symbol)
@@ -46,6 +48,8 @@ export default function HighLowManager({ symbol, settings = {}, name = "HighLowM
         lows={lows}
         closes={closes}
         price={price}
+        firstActiveIndex={market?.firstActiveIndex}
+        firstInterDayIndex={market?.firstInterDayIndex}
         activeTrades={activeTrades}
         inactiveTrades={inactiveTrades}
         range={range}

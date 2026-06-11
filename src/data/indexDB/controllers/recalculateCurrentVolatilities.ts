@@ -23,39 +23,48 @@ export async function controller(db: PriceSimulatorDexie) {
     return undefined
   }
 
+  const activeSymbols = timer?.activeSymbols
+  const targetSummaries =
+    activeSymbols && activeSymbols.length > 0
+      ? priceSummaries.filter((s) => s.symbol != null && activeSymbols.includes(s.symbol))
+      : priceSummaries
+
   await db.currentVolatilities.clear()
 
-  for await (const priceSummary of priceSummaries) {
-    const symbol = priceSummary.symbol
+  await Promise.all(
+    targetSummaries.map(async (priceSummary) => {
+      const symbol = priceSummary.symbol
+      const currentVolatilities = { symbol } as any
 
-    const currentVolatilities = { symbol } as any
-
-    for await (const duration of VOLATILITY_DURATIONS) {
       if (symbol != null) {
-        const overnightVolatility = await getMarketOvernightVolatilityValuesForSymbol(symbol, duration)
-        const parkinsonVolatility = await getMarketParkinsonVolatilityValuesForSymbol(symbol, duration)
-        const rogersSatchellVolatility = await getMarketRogersSatchellVolatilityValuesForSymbol(symbol, duration)
-        const garminKlassVolatility = await getMarketGarminKlassVolatilityValuesForSymbol(symbol, duration)
-        const yangZhangVolatility = await getMarketYangZhangVolatilityValuesForSymbol(symbol, duration)
+        await Promise.all(
+          VOLATILITY_DURATIONS.map(async (duration) => {
+            const overnightVolatility = await getMarketOvernightVolatilityValuesForSymbol(symbol, duration)
+            const parkinsonVolatility = await getMarketParkinsonVolatilityValuesForSymbol(symbol, duration)
+            const rogersSatchellVolatility = await getMarketRogersSatchellVolatilityValuesForSymbol(symbol, duration)
+            const garminKlassVolatility = await getMarketGarminKlassVolatilityValuesForSymbol(symbol, duration)
+            const yangZhangVolatility = await getMarketYangZhangVolatilityValuesForSymbol(symbol, duration)
 
-        const Volatility = extractVolatilityForIndex(
-          currentIndex,
-          overnightVolatility,
-          parkinsonVolatility,
-          rogersSatchellVolatility,
-          garminKlassVolatility,
-          yangZhangVolatility,
-          priceSummary
+            const Volatility = extractVolatilityForIndex(
+              currentIndex,
+              overnightVolatility,
+              parkinsonVolatility,
+              rogersSatchellVolatility,
+              garminKlassVolatility,
+              yangZhangVolatility,
+              priceSummary
+            )
+
+            currentVolatilities[duration.toString()] = Volatility
+          })
         )
-
-        currentVolatilities[duration.toString()] = Volatility
       }
-    }
 
-    if (currentVolatilities[VOLATILITY_DURATIONS[0].toString()] != null) {
-      await db.currentVolatilities.put(currentVolatilities)
-    }
-  }
+      if (currentVolatilities[VOLATILITY_DURATIONS[0].toString()] != null) {
+        await db.currentVolatilities.put(currentVolatilities)
+      }
+    })
+  )
 
   return db
 }

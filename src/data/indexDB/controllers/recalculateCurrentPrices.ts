@@ -22,24 +22,32 @@ export async function controller(db: PriceSimulatorDexie) {
     return undefined
   }
 
+  const activeSymbols = timer?.activeSymbols
+  const targetSummaries =
+    activeSymbols && activeSymbols.length > 0
+      ? priceSummaries.filter((s) => s.symbol != null && activeSymbols.includes(s.symbol))
+      : priceSummaries
+
   await db.currentPrices.clear()
 
-  for await (const priceSummary of priceSummaries) {
-    const symbol = priceSummary.symbol
+  await Promise.all(
+    targetSummaries.map(async (priceSummary) => {
+      const symbol = priceSummary.symbol
 
-    if (symbol != null) {
-      const opens = await getMarketOpenValuesForSymbol(symbol)
-      const highs = await getMarketHighValuesForSymbol(symbol)
-      const lows = await getMarketLowValuesForSymbol(symbol)
-      const closes = await getMarketCloseValuesForSymbol(symbol)
+      if (symbol != null) {
+        const opens = await getMarketOpenValuesForSymbol(symbol)
+        const highs = await getMarketHighValuesForSymbol(symbol)
+        const lows = await getMarketLowValuesForSymbol(symbol)
+        const closes = await getMarketCloseValuesForSymbol(symbol)
 
-      const currentPrice = extractPriceForIndex(currentIndex, opens, highs, lows, closes, priceSummary) as Price
+        const currentPrice = extractPriceForIndex(currentIndex, opens, highs, lows, closes, priceSummary) as Price
 
-      if (currentPrice != null) {
-        await db.currentPrices.put(currentPrice)
+        if (currentPrice != null) {
+          await db.currentPrices.put(currentPrice)
+        }
       }
-    }
-  }
+    })
+  )
 
   return db
 }

@@ -202,7 +202,7 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
   }
 
   const actionDiscoverOpeningRate = async () => {
-    timerStop()
+    await timerStop()
 
     const rate = await discoverTradeRate(symbol, tradeDirection)
 
@@ -222,7 +222,7 @@ export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWith
   }
 
   const actionDiscoverClosingRate = async () => {
-    timerStop()
+    await timerStop()
 
     const direction = tradeDirection === TradeDirection.Call ? TradeDirection.Put : TradeDirection.Call
     const rate = await discoverTradeRate(symbol, direction)

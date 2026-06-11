@@ -20,10 +20,11 @@ type ComponentProps = {
 
   range?: Range | null | undefined
 
+  firstActiveIndex?: number | null | undefined
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ClosesChart({ closes, price, range = "1m", name = "ClosesChart", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ClosesChart({ closes, price, range = "1m", firstActiveIndex, name = "ClosesChart", ...rest }: PropsWithChildren<ComponentProps>) {
   if (closes == null || price == null) {
     return null
   }
@@ -44,9 +45,24 @@ export default function ClosesChart({ closes, price, range = "1m", name = "Close
 
   const endDataIndex = priorIndex ?? 0
 
-  const displayCloses = price == null ? closes : closes?.slice(0, endDataIndex + 1) ?? []
+  // Strip leading nulls — slice from the first real value so Chart.js
+  // never renders the tapered fill artefact before data begins.
+  const firstActiveIndexRaw = closes.findIndex((v) => v != null)
+  const clampedFirstActive =
+    firstActiveIndex != null && firstActiveIndex >= 0 && firstActiveIndex <= endDataIndex
+      ? firstActiveIndex
+      : null
 
-  const labels = closes.map((_, index) => index)
+  let dataStart = firstActiveIndexRaw >= 0 ? firstActiveIndexRaw : 0
+
+  if (clampedFirstActive != null && dataStart < clampedFirstActive) {
+    dataStart = clampedFirstActive
+  }
+
+  const displayCloses = closes?.slice(dataStart, endDataIndex + 1) ?? []
+
+  // Labels are global day-indices so price annotations keep their correct positions
+  const labels = displayCloses.map((_, i) => dataStart + i)
 
   const displayPointRadius = range === "1m" || range === "3m" ? 2 : 0
 
@@ -64,10 +80,6 @@ export default function ClosesChart({ closes, price, range = "1m", name = "Close
       spanGaps: true,
     },
   ] as any
-
-  // Find the first index where data actually exists so we never render the empty lead-in
-  const firstActiveIndex = closes.findIndex((v) => v != null)
-  const dataStart = firstActiveIndex >= 0 ? firstActiveIndex : 0
 
   let startIndex = dataStart
 

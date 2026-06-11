@@ -23,6 +23,9 @@ type ComponentProps = {
 
   price: PriceOrNothing
 
+  firstActiveIndex?: number | null | undefined
+  firstInterDayIndex?: number | null | undefined
+
   activeTrades: Array<Trade> | null | undefined
   inactiveTrades: Array<Trade> | null | undefined
 
@@ -36,6 +39,8 @@ export default function HighLowChart({
   lows,
   closes,
   price,
+  firstActiveIndex,
+  firstInterDayIndex,
   activeTrades,
   inactiveTrades,
   range = "1m",
@@ -62,14 +67,44 @@ export default function HighLowChart({
 
   const endDataIndex = priorIndex ?? 0
 
-  const displayHighs = highs?.slice(0, endDataIndex + 1) ?? []
-  const displayLows = lows?.slice(0, endDataIndex + 1) ?? []
-  const displayCloses = closes?.slice(0, endDataIndex + 1) ?? []
+  // Use firstInterDayIndex from the market record (first day where open != close)
+  // as the authoritative dataStart — it skips fixed-rate / flat-data eras.
+  // MUST be clamped to endDataIndex: for many markets the full-history
+  // firstInterDayIndex is beyond the current simulated timer date.
+  const firstSpreadIndex = highs.findIndex((h, i) =>
+    h != null && lows[i] != null && h !== lows[i]
+  )
+  const firstNullIndex = highs.findIndex((v) => v != null)
 
-  // Find the first index where data actually exists so we never render the empty lead-in
-  const firstActiveIndex = highs.findIndex((v) => v != null)
+  const clampedFirstActive =
+    firstActiveIndex != null && firstActiveIndex >= 0 && firstActiveIndex <= endDataIndex
+      ? firstActiveIndex
+      : null
 
-  const labels = highs.map((_, index) => index)
+  const clampedFirstInterDay =
+    firstInterDayIndex != null && firstInterDayIndex >= 0 && firstInterDayIndex <= endDataIndex
+      ? firstInterDayIndex
+      : null
+
+  let dataStart =
+    clampedFirstInterDay != null
+      ? clampedFirstInterDay
+      : firstSpreadIndex >= 0 && firstSpreadIndex <= endDataIndex
+      ? firstSpreadIndex
+      : firstNullIndex >= 0
+      ? firstNullIndex
+      : 0
+
+  if (clampedFirstActive != null && dataStart < clampedFirstActive) {
+    dataStart = clampedFirstActive
+  }
+
+  const displayHighs = highs?.slice(dataStart, endDataIndex + 1) ?? []
+  const displayLows = lows?.slice(dataStart, endDataIndex + 1) ?? []
+  const displayCloses = closes?.slice(dataStart, endDataIndex + 1) ?? []
+
+  // Labels are global day-indices so trade annotations keep their correct positions
+  const labels = displayHighs.map((_, i) => dataStart + i)
 
   const datasets = [] as any
 
@@ -162,12 +197,12 @@ export default function HighLowChart({
   } else if (range === "5y") {
     startIndex = startIndex - 5 * 365
   } else if (range === "at") {
-    startIndex = firstActiveIndex >= 0 ? firstActiveIndex : 0
+    startIndex = dataStart
   }
 
-  // Never start before the first real data point
-  if (startIndex < (firstActiveIndex >= 0 ? firstActiveIndex : 0)) {
-    startIndex = firstActiveIndex >= 0 ? firstActiveIndex : 0
+  // Never start before the first bar with real spread
+  if (startIndex < dataStart) {
+    startIndex = dataStart
   }
 
   let pricePointValue

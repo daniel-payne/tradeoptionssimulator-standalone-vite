@@ -8,6 +8,8 @@ export type Timer = {
   currentIndex?: number
 
   isTimerActive?: boolean
+
+  activeSymbols?: Array<string>
 }
 
 export type TimerOrNothing = Timer | null | undefined

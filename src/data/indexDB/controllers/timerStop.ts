@@ -16,7 +16,7 @@ export async function controller(db: PriceSimulatorDexie, force: boolean) {
     window.clearTimeout(db.timeout)
   }
 
-  timerUpdate({ isTimerActive: false })
+  await timerUpdate({ isTimerActive: false })
 }
 
 export default function timerStop(force = false) {

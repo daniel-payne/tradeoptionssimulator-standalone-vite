@@ -12,7 +12,7 @@ export async function controller(db: PriceSimulatorDexie, day?: string) {
   }
 
   if (day == null) {
-    await timerUpdate({ isTimerActive: false, currentIndex: DEFAULT_START })
+    await timerUpdate({ isTimerActive: false, currentIndex: DEFAULT_START, activeSymbols: undefined })
 
     return
   }
@@ -23,7 +23,7 @@ export async function controller(db: PriceSimulatorDexie, day?: string) {
 
   const currentIndex = Math.floor(currentEpoch / 1000 / 60 / 60 / 24)
 
-  await timerUpdate({ isTimerActive: false, currentIndex })
+  await timerUpdate({ isTimerActive: false, currentIndex, activeSymbols: undefined })
 
   await timerNextDay(true)
 }
