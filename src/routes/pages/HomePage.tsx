@@ -8,6 +8,8 @@ import formatIndexAsDay from "@/utilities/formatIndexAsDay"
 
 // import resetTrading from "@/data/indexDB/controllers/resetTrading"
 
+import timerStart from "@/data/indexDB/controllers/timerStart"
+import timerStop from "@/data/indexDB/controllers/timerStop"
 import { useEffect, useState, type HTMLAttributes, type PropsWithChildren } from "react"
 import { FaVideo } from "react-icons/fa6"
 import useMarkets from "@/data/indexDB/hooks/useMarkets"
@@ -26,6 +28,10 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
+  useEffect(() => {
+    timerStop(true)
+  }, [])
+
   useLocalState<boolean>("CONFIRMED-WARNINGS", false)
 
   const navigate = useNavigate()
@@ -58,6 +64,7 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
 
   const handleStartTrading = async () => {
     if (marketsCount === loadedMarketsCount) {
+      await timerStart()
       navigate("/prices")
     } else {
       const element = document?.getElementById(LOADALL_MODAL) as HTMLDialogElement

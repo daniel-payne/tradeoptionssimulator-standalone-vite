@@ -46,25 +46,28 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   const cachedHighs = db.highsCache[symbol]
   const cachedLows = db.lowsCache[symbol]
   const cachedCloses = db.closesCache[symbol]
+  const cachedVolatilities = db.volatilitiesCache[symbol]
 
-  if (cachedOpens != null && cachedHighs != null && cachedLows != null && cachedCloses != null) {
+  if (cachedOpens != null && cachedHighs != null && cachedLows != null && cachedCloses != null && cachedVolatilities != null) {
     consoleInfo(`ohlcLoadFor: caches found for ${symbol}, returning early`)
     return
   }
 
-  consoleInfo(`ohlcLoadFor: querying db for stored opens/highs/lows/closes for ${symbol}...`)
+  consoleInfo(`ohlcLoadFor: querying db for stored opens/highs/lows/closes/volatilities for ${symbol}...`)
   const storedOpens = await db.opens.get(symbol)
   const storedHighs = await db.highs.get(symbol)
   const storedLows = await db.lows.get(symbol)
   const storedCloses = await db.closes.get(symbol)
-  consoleInfo(`ohlcLoadFor: stored opens found? = ${storedOpens != null}, highs? = ${storedHighs != null}`)
+  const storedVolatilities = await db.volatilities.get(symbol)
+  consoleInfo(`ohlcLoadFor: stored opens found? = ${storedOpens != null}, volatilities found? = ${storedVolatilities != null}`)
 
-  if (storedOpens != null && storedHighs != null && storedLows != null && storedCloses != null) {
+  if (storedOpens != null && storedHighs != null && storedLows != null && storedCloses != null && storedVolatilities != null) {
     consoleInfo(`ohlcLoadFor: storing retrieved db records into cache for ${symbol}`)
     db.opensCache[symbol] = storedOpens.data
     db.highsCache[symbol] = storedHighs.data
     db.lowsCache[symbol] = storedLows.data
     db.closesCache[symbol] = storedCloses.data
+    db.volatilitiesCache[symbol] = storedVolatilities.data
 
     return
   }
@@ -184,21 +187,42 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   consoleInfo(`ohlcLoadFor: updating market in db for ${symbol}...`)
   await marketUpdate(summary)
 
-  consoleInfo(`ohlcLoadFor: saving opens/highs/lows/closes arrays to db...`)
+  consoleInfo(`ohlcLoadFor: fetching volatility file for ${symbol}...`)
+  const volUrl = `/volatilities/${encodeURIComponent(market.symbol.toLowerCase())}.json`
+  let volatilitiesData: any = null
+  try {
+    const volResponse = await fetch(volUrl, {})
+    if (volResponse.ok) {
+      volatilitiesData = await volResponse.json()
+    } else {
+      console.warn(`ohlcLoadFor: volatility fetch failed for ${symbol}: ${volResponse.statusText}`)
+    }
+  } catch (err) {
+    console.error(`ohlcLoadFor: error fetching volatility for ${symbol}:`, err)
+  }
+
+  consoleInfo(`ohlcLoadFor: saving opens/highs/lows/closes/volatilities arrays to db...`)
   await db.opens.put(opens)
   await db.highs.put(highs)
   await db.lows.put(lows)
   await db.closes.put(closes)
+  if (volatilitiesData != null) {
+    await db.volatilities.put({ symbol, data: volatilitiesData })
+  }
 
   db.opensCache = structuredClone(db.opensCache)
   db.highsCache = structuredClone(db.highsCache)
   db.lowsCache = structuredClone(db.lowsCache)
   db.closesCache = structuredClone(db.closesCache)
+  db.volatilitiesCache = structuredClone(db.volatilitiesCache)
 
   db.opensCache[symbol] = opens.data
   db.highsCache[symbol] = highs.data
   db.lowsCache[symbol] = lows.data
   db.closesCache[symbol] = closes.data
+  if (volatilitiesData != null) {
+    db.volatilitiesCache[symbol] = volatilitiesData
+  }
 
   consoleInfo(`ohlcLoadFor: data loaded successfully for ${symbol}`)
   LOADING[symbol] = false

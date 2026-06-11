@@ -43,7 +43,7 @@ export default function ClosesChart({ closes, price, range = "1m", firstActiveIn
   const priorOpen = price?.priorOpen
   const priorClose = price?.priorClose
 
-  const endDataIndex = priorIndex ?? 0
+  const endDataIndex = currentIndex ?? priorIndex ?? 0
 
   // Strip leading nulls — slice from the first real value so Chart.js
   // never renders the tapered fill artefact before data begins.
@@ -104,7 +104,7 @@ export default function ClosesChart({ closes, price, range = "1m", firstActiveIn
 
   if (isMarketClosed) {
     pricePointValue = priorClose
-    pricePointIndex = priorIndex
+    pricePointIndex = currentIndex ?? priorIndex
     if ((priorClose ?? 0) > (priorOpen ?? 0)) {
       pricePointColor = cssVar("--outcome-profit-50")
     } else if ((priorClose ?? 0) < (priorOpen ?? 0)) {

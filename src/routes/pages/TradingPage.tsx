@@ -29,17 +29,21 @@ export default function TradingPage({ name = "TradingPage", ...rest }: PropsWith
   const favoriteSymbols = useFavoriteList()
   const range = useRangeSelection("1m")
 
-  if (symbols === undefined) {
-    return
-  }
-
   const symbolList = symbols?.split(",")
+
+  useEffect(() => {
+    timerStart()
+  }, [])
 
   useEffect(() => {
     if (symbolList && symbolList.length > 0) {
       timerUpdate({ activeSymbols: symbolList })
     }
   }, [symbolList?.join(",")])
+
+  if (symbols === undefined || symbolList === undefined) {
+    return
+  }
 
   const displayWrapperClassName = "h-full w-full min-h-0 min-w-0 flex flex-row flex-wrap overflow-hidden justify-start items-start"
 

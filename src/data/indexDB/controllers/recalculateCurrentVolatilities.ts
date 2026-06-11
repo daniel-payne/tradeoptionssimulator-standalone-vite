@@ -1,16 +1,7 @@
 import db from "@/data/indexDB/db"
-
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
-
 import getTimer from "./getTimer"
-
 import getPriceSummaries from "./getPriceSummaries"
-import getMarketOvernightVolatilityValuesForSymbol from "./getMarketOvernightVolatilityValuesForSymbol"
-import getMarketParkinsonVolatilityValuesForSymbol from "./getMarketParkinsonVolatilityValuesForSymbol"
-import getMarketRogersSatchellVolatilityValuesForSymbol from "./getMarketRogersSatchellVolatilityValuesForSymbol"
-import getMarketGarminKlassVolatilityValuesForSymbol from "./getMarketGarminKlassVolatilityValuesForSymbol"
-import getMarketYangZhangVolatilityValuesForSymbol from "./getMarketYangZhangVolatilityValuesForSymbol"
-import extractVolatilityForIndex from "../calculate/extractVolatilityForIndex"
 import { VOLATILITY_DURATIONS } from "../constants/VOLATILITY_DURATIONS"
 
 export async function controller(db: PriceSimulatorDexie) {
@@ -34,30 +25,53 @@ export async function controller(db: PriceSimulatorDexie) {
   await Promise.all(
     targetSummaries.map(async (priceSummary) => {
       const symbol = priceSummary.symbol
+      if (symbol == null) return
+
+      let vData = db.volatilitiesCache[symbol]
+      if (vData == null) {
+        const stored = await db.volatilities.get(symbol)
+        if (stored?.data != null) {
+          db.volatilitiesCache[symbol] = stored.data
+          vData = stored.data
+        }
+      }
+
+      if (vData == null) {
+        return
+      }
+
+      const { firstActiveIndex, lastActiveIndex, durations } = vData
+
+      if (currentIndex < firstActiveIndex || currentIndex > lastActiveIndex) {
+        return
+      }
+
+      const arrayIndex = currentIndex - firstActiveIndex
       const currentVolatilities = { symbol } as any
 
-      if (symbol != null) {
-        await Promise.all(
-          VOLATILITY_DURATIONS.map(async (duration) => {
-            const overnightVolatility = await getMarketOvernightVolatilityValuesForSymbol(symbol, duration)
-            const parkinsonVolatility = await getMarketParkinsonVolatilityValuesForSymbol(symbol, duration)
-            const rogersSatchellVolatility = await getMarketRogersSatchellVolatilityValuesForSymbol(symbol, duration)
-            const garminKlassVolatility = await getMarketGarminKlassVolatilityValuesForSymbol(symbol, duration)
-            const yangZhangVolatility = await getMarketYangZhangVolatilityValuesForSymbol(symbol, duration)
+      for (const duration of VOLATILITY_DURATIONS) {
+        const durationStr = duration.toString()
+        const durationData = durations[durationStr]
 
-            const Volatility = extractVolatilityForIndex(
-              currentIndex,
-              overnightVolatility,
-              parkinsonVolatility,
-              rogersSatchellVolatility,
-              garminKlassVolatility,
-              yangZhangVolatility,
-              priceSummary
-            )
+        if (durationData != null) {
+          const overnightVolatility = durationData.overnight[arrayIndex]
+          const parkinsonVolatility = durationData.parkinson[arrayIndex]
+          const rogersSatchellVolatility = durationData.rogersSatchell[arrayIndex]
+          const garminKlassVolatility = durationData.garminKlass[arrayIndex]
+          const yangZhangVolatility = durationData.yangZhang[arrayIndex]
+          const volatility = durationData.volatility[arrayIndex]
 
-            currentVolatilities[duration.toString()] = Volatility
-          })
-        )
+          currentVolatilities[durationStr] = {
+            symbol,
+            currentIndex,
+            overnightVolatility,
+            parkinsonVolatility,
+            rogersSatchellVolatility,
+            garminKlassVolatility,
+            yangZhangVolatility,
+            volatility,
+          }
+        }
       }
 
       if (currentVolatilities[VOLATILITY_DURATIONS[0].toString()] != null) {

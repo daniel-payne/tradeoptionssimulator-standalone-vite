@@ -7,6 +7,7 @@ import { TradeStatus } from "../enums/TradeStatus"
 
 export async function controller(db: PriceSimulatorDexie, force: boolean) {
   const activeTradeCount = await db.trades?.where({ status: TradeStatus.Open }).count()
+  console.log(`[TimerDebug] timerStop controller called, force=${force}, activeTradeCount=${activeTradeCount}, timeout=${db.timeout}`)
 
   if (activeTradeCount > 0 && force === false) {
     return

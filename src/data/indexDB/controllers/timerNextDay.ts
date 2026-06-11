@@ -70,10 +70,12 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
 
   const { speed } = currentTimer ?? {}
 
-  if (isTimerActive === true) {
+  const latestTimer = await getTimer(db)
+
+  if (latestTimer?.isTimerActive === true && latestTimer?.guid === db.guid) {
     db.timeout = window.setTimeout(() => {
       controller(db, takeControl)
-    }, speed ?? ScenarioSpeed.Slow)
+    }, latestTimer.speed ?? speed ?? ScenarioSpeed.Slow)
   }
 }
 

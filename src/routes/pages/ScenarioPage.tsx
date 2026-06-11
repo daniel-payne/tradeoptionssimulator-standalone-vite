@@ -25,7 +25,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function TradingPage({ name = "TradingPage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ScenarioPage({ name = "ScenarioPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const { ref } = useParams()
 
   const [processError, setProcessError] = useState<any>(null)
@@ -35,19 +35,24 @@ export default function TradingPage({ name = "TradingPage", ...rest }: PropsWith
   const favoriteSymbols = useFavoriteList()
   const range = useRangeSelection("1m")
 
-  if (scenario === undefined) {
-    return <div>No Scenario</div>
-  }
-
   const scenarioSymbols = scenario?.symbols?.split(",")
 
-  const scenarioSettings = JSON.parse(scenario?.settings ?? "{}")
+  useEffect(() => {
+    console.log("[TimerDebug] ScenarioPage useEffect mount - starting timer")
+    timerStart()
+  }, [])
 
   useEffect(() => {
     if (scenarioSymbols && scenarioSymbols.length > 0) {
       timerUpdate({ activeSymbols: scenarioSymbols })
     }
   }, [scenarioSymbols?.join(",")])
+
+  if (scenario === undefined || scenarioSymbols === undefined) {
+    return <div>No Scenario</div>
+  }
+
+  const scenarioSettings = JSON.parse(scenario?.settings ?? "{}")
 
   const displayWrapperClassName = "h-full w-full min-h-0 min-w-0 flex flex-row flex-wrap overflow-hidden justify-start items-start"
 

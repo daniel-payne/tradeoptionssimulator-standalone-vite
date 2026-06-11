@@ -9,6 +9,7 @@ import type { PriceSimulatorDexie } from "../db"
 import timerUpdate from "./timerUpdate"
 
 export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed) {
+  console.log(`[TimerDebug] timerStart controller called, speed=${speed}, timeout=${db.timeout}`)
   if (db.timeout != null) {
     window.clearTimeout(db.timeout)
   }

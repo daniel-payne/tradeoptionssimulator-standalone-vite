@@ -1,7 +1,8 @@
 import useScenarios from "@/data/indexDB/hooks/useScenarios"
 import ScenariosHeader from "@/display/coordinators/ScenariosHeader"
+import timerStop from "@/data/indexDB/controllers/timerStop"
 
-import type { HTMLAttributes, PropsWithChildren } from "react"
+import { useEffect, type HTMLAttributes, type PropsWithChildren } from "react"
 import { FaVideo } from "react-icons/fa6"
 import { Link } from "react-router"
 
@@ -10,6 +11,10 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function ScenariosPage({ name = "ScenariosPage", ...rest }: PropsWithChildren<ComponentProps>) {
+  useEffect(() => {
+    timerStop(true)
+  }, [])
+
   const scenarios = useScenarios()
 
   if ((scenarios?.length ?? 0) < 1) {

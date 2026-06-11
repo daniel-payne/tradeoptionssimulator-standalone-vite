@@ -45,6 +45,7 @@ export async function controller(db: PriceSimulatorDexie) {
   db.lowsCache = {}
   db.closesCache = {}
   db.ratesCache = {}
+  db.volatilitiesCache = {}
 
   consoleInfo("clearAllData: clearing db.percentageCloseYesterdays...")
   await db.percentageCloseYesterdays.clear()
@@ -79,20 +80,8 @@ export async function controller(db: PriceSimulatorDexie) {
   consoleInfo("clearAllData: clearing db.rogersSatchellValues...")
   await db.rogersSatchellValues.clear()
 
-  consoleInfo("clearAllData: clearing db.overnightVolatilities...")
-  await db.overnightVolatilities.clear()
-
-  consoleInfo("clearAllData: clearing db.parkinsonVolatilities...")
-  await db.parkinsonVolatilities.clear()
-
-  consoleInfo("clearAllData: clearing db.rogersSatchellVolatilities...")
-  await db.rogersSatchellVolatilities.clear()
-
-  consoleInfo("clearAllData: clearing db.garminKlassVolatilities...")
-  await db.garminKlassVolatilities.clear()
-
-  consoleInfo("clearAllData: clearing db.yangZhangVolatilities...")
-  await db.yangZhangVolatilities.clear()
+  consoleInfo("clearAllData: clearing db.volatilities...")
+  await db.volatilities.clear()
 
   consoleInfo("clearAllData: clearing db.currencyRates...")
   await db.currencyRates.clear()

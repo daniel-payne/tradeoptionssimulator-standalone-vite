@@ -65,7 +65,7 @@ export default function HighLowChart({
   const priorOpen = price?.priorOpen
   const priorClose = price?.priorClose
 
-  const endDataIndex = priorIndex ?? 0
+  const endDataIndex = currentIndex ?? priorIndex ?? 0
 
   // Use firstInterDayIndex from the market record (first day where open != close)
   // as the authoritative dataStart — it skips fixed-rate / flat-data eras.
@@ -211,7 +211,7 @@ export default function HighLowChart({
 
   if (isMarketClosed) {
     pricePointValue = priorClose
-    pricePointIndex = priorIndex
+    pricePointIndex = currentIndex ?? priorIndex
     if ((priorClose ?? 0) > (priorOpen ?? 0)) {
       pricePointColor = cssVar("--outcome-profit-50")
     } else if ((priorClose ?? 0) < (priorOpen ?? 0)) {

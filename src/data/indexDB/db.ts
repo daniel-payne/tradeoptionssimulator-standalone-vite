@@ -74,11 +74,7 @@ export class PriceSimulatorDexie extends Dexie {
   garminKlassValues!: Table<SymbolData>
   rogersSatchellValues!: Table<SymbolData>
 
-  overnightVolatilities!: Table<RangeData>
-  parkinsonVolatilities!: Table<RangeData>
-  rogersSatchellVolatilities!: Table<RangeData>
-  garminKlassVolatilities!: Table<RangeData>
-  yangZhangVolatilities!: Table<RangeData>
+  volatilities!: Table<any>
 
   currencyRates!: Table<KeyData>
 
@@ -96,6 +92,7 @@ export class PriceSimulatorDexie extends Dexie {
   lowsCache: Record<string, Array<number | null | undefined> | null | undefined> = {}
   closesCache: Record<string, Array<number | null | undefined> | null | undefined> = {}
   ratesCache: Record<string, Array<number | null | undefined> | null | undefined> = {}
+  volatilitiesCache: Record<string, any> = {}
 
   constructor() {
     super("PriceSimulator")
@@ -157,6 +154,15 @@ export class PriceSimulatorDexie extends Dexie {
       currentVolatilities: "symbol",
       currentRates: "key",
       currentMargins: "id, status",
+    })
+
+    this.version(13).stores({
+      overnightVolatilities: null,
+      parkinsonVolatilities: null,
+      rogersSatchellVolatilities: null,
+      garminKlassVolatilities: null,
+      yangZhangVolatilities: null,
+      volatilities: "symbol",
     })
 
     this.guid = generateID()

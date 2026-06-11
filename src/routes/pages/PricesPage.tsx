@@ -15,6 +15,7 @@ import { Settings } from "@/display/Settings"
 import capitalizedWord from "@/utilities/capitalizedWord"
 import sizeForCount from "@/utilities/sizeForCount"
 import { useQueryState } from "@keldan-systems/state-mutex"
+import timerStart from "@/data/indexDB/controllers/timerStart"
 import { useEffect, type HTMLAttributes, type PropsWithChildren } from "react"
 
 type ComponentProps = {
@@ -22,6 +23,9 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithChildren<ComponentProps>) {
+  useEffect(() => {
+    timerStart()
+  }, [])
   const favorite = useFavoriteSelection()
 
   const favoriteSymbols = useFavoriteList()

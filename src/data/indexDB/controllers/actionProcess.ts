@@ -14,8 +14,7 @@ export async function controller(db: PriceSimulatorDexie, instructions: any) {
 
   const { symbol, size, direction, id } = options
 
-  await timerStop(db, true)
-  // alert(JSON.stringify({ action, options: { symbol, size, direction } }, null, 2))
+  console.log(`[TimerDebug] actionProcess controller action=${action}`)
 
   switch (action) {
     case "contractOpen":
@@ -24,17 +23,9 @@ export async function controller(db: PriceSimulatorDexie, instructions: any) {
     case "tradeClose":
       await tradeClose(db, id)
       break
-    // tradeQuote(symbol, amount, direction, stop, take, expiry)
-    // quoteConfirm(id)
-    // tradeClose(id)
-
-    // optionQuote(symbol, amount, call, put, american, strike, expiry)
-    // optionExercise(id)
-    // optionCancelQuote(id)
-    // optionCancel(id)
   }
 
-  timerStart(db, ScenarioSpeed.Slow)
+  await timerStart(db)
 
   return
 }
